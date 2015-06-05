@@ -79,7 +79,6 @@
   <% end %>
 
   <%= next_col %>
-
   <% if @tree %>
     <b><%= @tree.owner.fname %></b> is the primary contact for this tree and is a <b><%= @tree.relationship %></b> in relation to the property. 
   <% else %>
@@ -103,22 +102,22 @@
   <% if @tree %>
 
     <% if Tree.types.include?(@tree.species.capitalize.to_s) %>
-    <%= image_tag("fruits/#{@tree.species.downcase}32.png") %>
+      <%= image_tag("fruits/#{@tree.species.downcase}32.png") %>
+    <% end %>
+      <%= @tree.height %> metre <b><%= @tree.species.capitalize %></b> tree at <%= @tree.owner.address %>
+    </p>
+
+
+    <p>Please keep <%= @tree.keep %> fruit for the property owner.</p>
+
+    <h3>Treatment</h3>
+    <p><%= @tree.treatment %></p>
+
+    <h3>Additional Notes</h3>
+    <p><%= @tree.additional %></p>
+
   <% end %>
-    <%= @tree.height %> metre <b><%= @tree.species.capitalize %></b> tree at <%= @tree.owner.address %>
-  </p>
-
-
-  <p>Please keep <%= @tree.keep %> fruit for the property owner.</p>
-
-  <h3>Treatment</h3>
-  <p><%= @tree.treatment %></p>
-
-  <h3>Additional Notes</h3>
-  <p><%= @tree.additional %></p>
-
-  <% end %>
-
+<!--
 <h1>Trees already added to this pick</h1>  
 <div id="selectedTrees" style="width: 100%">
 <table>
@@ -166,6 +165,7 @@
   </tbody>
 </table>
 </div>
+-->
   <!-- Find closest trees, make a list of all trees closest to property  -->
   <script language="">
 
@@ -246,11 +246,12 @@
 
     })
   </script>
+  <!--
   <h1 style="margin-top: 40px">Add nearby trees to this pick</h1>
   <div id="searchTrees">
       <%= render 'trees/formlist' %>
   </div>
-
+-->
   <%= end_cols %>
 
   <%= start_cols %>

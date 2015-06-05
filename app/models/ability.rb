@@ -8,7 +8,8 @@ class Ability
     can :index, :geocode
     
     if user.persisted?
-      can :manage, Tree
+      cannot :manage, Tree
+      #can :manage, Tree
       can :read, Event, can_have_participants?: true
       can [:dashboard, :calendar], Event
       
