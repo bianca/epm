@@ -284,19 +284,6 @@
         coordinators = User.where id: current_user.id
       end
     %>
-    <% content_for :js_ready do %>
-      var checkTimeForSet = function () {
-        if ($('#time_fields').css('visibility') != 'hidden') {
-          $("#equipment_set").show();
-        } else {
-          $("#equipment_set").hide();
-        }
-      }
-      $('#time_fields').change(function () {
-        checkTimeForSet();
-      });
-      checkTimeForSet();
-    <% end %>
     <% if EquipmentSet.any? %>
       <fieldset id="equipment_set">
         <%= f.label :equipment_set_id, style: 'font-weight:normal' %>
