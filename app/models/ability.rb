@@ -23,13 +23,11 @@ class Ability
       if user.has_role? :admin
         can :manage, [Event, Role, EquipmentSet, Agency, Tree, :setting]
         cannot [:claim, :attend], Event
-        can :approve, Event
+        can [:approve, :hide_specific_location], Event
         can [:index, :map, :show, :read_contact, :read_attendance, :update, :destroy, :invite], User
       end
 
       if user.has_role? :coordinator
-        can :manage, [EquipmentSet]
-        can :read, Agency
         can [:read, :create], Event
         can :edit, Event do |event|
           ((event.coordinator.present? && event.coordinator == user) || event.coordinator.blank?)

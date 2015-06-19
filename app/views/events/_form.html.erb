@@ -85,7 +85,7 @@
   <% else %>
     <% if @event.can_edit_attribute? :address, current_user %>
       <%= render layout: 'shared/address_form', locals: { f: f } do %>
-        <% if @event.can_edit_attribute? :hide_specific_location, current_user %>
+        <% if can?(:hide_specific_location, @event) %>
           <%= f.check_box :hide_specific_location %>
         <%= f.label :hide_specific_location, 'Hide specific location for non-attendees', style: 'font-weight:normal' %>
         <% end %>
