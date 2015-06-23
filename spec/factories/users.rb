@@ -28,6 +28,7 @@ FactoryGirl.define do
  
     factory :participant do
       roles_attributes [name: :participant]
+      waiver { true }
     end
 
     factory :full_user do

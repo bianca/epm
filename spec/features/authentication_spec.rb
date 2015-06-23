@@ -12,6 +12,7 @@ describe "Authentication" do
     fill_in 'user_fname', with: u.fname
     fill_in 'user_lname', with: u.lname
     fill_in 'Phone', with: u.phone
+    check 'I want to participate in NFFTT picks'
     check 'I have read and agree to the above release of liability'
     expect{ click_button 'Sign up' }.to change{ActionMailer::Base.deliveries.size}.by 1
     user = User.last
@@ -20,6 +21,39 @@ describe "Authentication" do
     expect(current_path).to eq new_user_session_path
     expect(page).to have_content 'Check your inbox and spam folder for a confirmation email'
   end
+
+  it "signs up a new user for adding trees" do
+    visit new_user_registration_path
+    pass = Faker::Internet.password
+    u = build :user, password: pass
+    fill_in 'E-mail Address', with: u.email
+    fill_in 'user_password', with: pass
+    fill_in 'user_password_confirmation', with: pass
+    fill_in 'user_fname', with: u.fname
+    fill_in 'user_lname', with: u.lname
+    fill_in 'Phone', with: u.phone
+    check "I want to add trees to NFFTT's tree database"
+    expect{ click_button 'Sign up' }.to change{ActionMailer::Base.deliveries.size}.by 1
+    user = User.last
+    expect(last_email.to).to eq [user.email]
+    expect(last_email.from).to eq ['no-reply@example.com']
+    expect(current_path).to eq new_user_session_path
+    expect(page).to have_content 'Check your inbox and spam folder for a confirmation email'
+  end
+
+  it "fails to sign up a new user that doesn't want to add trees or participate in picks" do
+    visit new_user_registration_path
+    pass = Faker::Internet.password
+    u = build :user, password: pass
+    fill_in 'E-mail Address', with: u.email
+    fill_in 'user_password', with: pass
+    fill_in 'user_password_confirmation', with: pass
+    fill_in 'user_fname', with: u.fname
+    fill_in 'user_lname', with: u.lname
+    fill_in 'Phone', with: u.phone
+    click_button 'Sign up'
+    expect(current_path).to eq users_path
+  end 
 
   it "fails to sign up an invalid user" do
     visit new_user_registration_path
@@ -88,8 +122,16 @@ describe "Authentication" do
     visit root_path
     click_link "Sign up"
     fill_in 'Full Address', with: Faker::Lorem.sentences(rand 1..5).join(' ')
+    find_field('Full Address').trigger('blur')
+    Timeout.timeout(30) do
+      loop until page.evaluate_script('jQuery.active').zero?
+    end
     expect(page).to have_content 'We couldnt find that address on a map.'
     fill_in 'Full Address', with: "#{Faker::Address.street_address}\n#{Faker::Address.city}, #{Faker::Address.country}"
+    find_field('Full Address').trigger('blur')
+    Timeout.timeout(30) do
+      loop until page.evaluate_script('jQuery.active').zero?
+    end
     expect(page).not_to have_content 'We couldnt find that address on a map.'
   end
 
