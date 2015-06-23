@@ -19,7 +19,7 @@
     </div>
   <% end %>
 
-  <% if @event.can_edit_attribute? :start, current_user %>
+  <% if @event.new_record? || (current_user.has_role? :admin) || @event.start.blank? %>
     <fieldset id="when">
       <div class="field">
         <%= f.label :start_day, 'Date' %>
@@ -57,6 +57,11 @@
         $('#time_fields').css('visibility', 'hidden');
       <% end %>
     <% end %>
+  <% else %>
+    <%= date @event.start %> <small><%= relative_time @event %></small>
+    <br>
+    <%= time @event.start %> to <%= time @event.finish %>
+    <small>for <%= pluralize @event.duration_hours, 'hour' %></small>
   <% end %>
 
   <% if @event.can_edit_attribute?(:notes, current_user) || can?(:read_notes, @event) && @event.notes %>
