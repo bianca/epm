@@ -3,13 +3,22 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
   strip_attributes
-
-#  attr_accessor :signed_waiver
+ 
   attr_accessor :participate_in_picks
   attr_accessor :add_trees  
   
   validates :waiver, :acceptance => { :accept => true }, if: (:new_record? && :picks?)
   validates :email, :fname, :lname, :phone, presence: true
+
+
+  validate :hasPurpose
+
+  def hasPurpose
+     if add_trees == "0" && participate_in_picks == "0"
+      errors.add(:base, "You must choose to either 'participate in picks' or 'add trees'")
+     end
+  end
+
 
   enum ladder: {
     :yes => 1,

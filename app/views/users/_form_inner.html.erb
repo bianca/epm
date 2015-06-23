@@ -1,5 +1,5 @@
 <%= start_cols %>
-<% if action_name == "new" %>
+<% if user.new_record? %>
   <fieldset>
     <legend>How do you want to participate in Not Far From the Tree?</legend>
     <label style="margin:0 0.7em"><%= f.check_box  :participate_in_picks %> I want to participate in NFFTT picks</label>
