@@ -16,9 +16,15 @@
       <tr>
         <td style="font-weight: bold"><%= equipment_set.title %></td>
         <td style="font-weight: none"><%= equipment_set.description %></td>
-        <td><%= link_to 'Show', equipment_set %></td>
-        <td><%= link_to 'Edit', edit_equipment_set_path(equipment_set) %></td>
-        <td><%= link_to 'Delete', equipment_set, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% if can?(:read, equipment_set) %>
+          <td><%= link_to 'Show', equipment_set %></td>
+        <% end %>
+        <% if can?(:edit, equipment_set) %>
+          <td><%= link_to 'Edit', edit_equipment_set_path(equipment_set) %></td>
+        <% end %>
+        <% if can?(:edit, equipment_set) %>
+          <td><%= link_to 'Delete', equipment_set, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
