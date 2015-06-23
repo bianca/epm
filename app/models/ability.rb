@@ -29,6 +29,7 @@ class Ability
 
       if user.has_role? :coordinator
         can [:read, :create], Event
+        can :read, [EquipmentSet, Agency]
         can :edit, Event do |event|
           ((event.coordinator.present? && event.coordinator == user) || event.coordinator.blank?)
         end
