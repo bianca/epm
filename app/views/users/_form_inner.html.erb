@@ -1,10 +1,10 @@
 <%= start_cols %>
 <% if user.new_record? %>
   <fieldset>
-    <legend>How do you want to participate in Not Far From the Tree?</legend>
-    <label style="margin:0 0.7em"><%= f.check_box  :participate_in_picks %> I want to participate in NFFTT picks</label>
+    <!--<legend>How do you want to participate in Not Far From the Tree?</legend>-->
+    <label style="margin:0 0.7em"><%= f.check_box  :participate_in_picks, {hidden: true, checked: true} %><!--I want to participate in NFFTT picks--></label>
     <br />
-    <label style="margin:0 0.7em"><%= f.check_box  :add_trees %> I want to add trees to NFFTT's tree database</label>
+    <label style="margin:0 0.7em"><%= f.check_box  :add_trees, {hidden: true} %><!--I want to add trees to NFFTT's tree database--></label>
   </fieldset>
 <% end %>
 
@@ -48,6 +48,7 @@
         Subscribe me to the Not Far From The Tree mailing list
       </label>
       </div>
+      <!--
       <br />
       You can tell me about picks by:
       <div style="margin-left: 20px">
@@ -68,6 +69,7 @@
           <b>Phone</b>
         </label>
       </div>
+      -->
     <% end %>  
 
 <%= next_col %>
