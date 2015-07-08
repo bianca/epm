@@ -65,7 +65,7 @@
         q = q.participatable_by(current_user) unless current_user.has_role? :admin
         @sections << { q: q, name: "#{Configurable.event.pluralize.titlecase} Needing More #{Configurable.participant.pluralize.titlecase}", id: 'not_full' }
 
-        q = Event.participatable.not_past.where(reached_max: true).limit(max)
+        q = Event.participatable.not_past.where(reached_max: true)
         q = q.participatable_by(current_user) unless current_user.has_role? :admin
         @sections << { q: q, name: "#{Configurable.event.pluralize.titlecase} That Are Full (Join Waitlist)", id: 'full' }
       end
