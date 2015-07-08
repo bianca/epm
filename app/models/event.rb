@@ -362,6 +362,7 @@ class Event < ActiveRecord::Base
     event_users.where(user_id: user.id).first_or_initialize.attend
   end
   def unattend(user)
+    puts "UNATTEND"
     event_users.where(user_id: user.id).first_or_initialize.unattend
   end
 

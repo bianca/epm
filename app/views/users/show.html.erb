@@ -86,7 +86,7 @@
       <% @user.event_users.joins(:event).where(status: [EventUser.statuses[:attending], EventUser.statuses[:attended], EventUser.statuses[:no_show]]).order('events.start asc').each do |eu| %>
         <li>
           <%= link_to eu.event.display_name(current_user).to_s + "  " + date(eu.event.start).to_s, eu.event %> (<%=eu.event.status.capitalize %>) <span class="label <%=eu.status %>"> <%=event_user_status(eu.status) %></span>
-            <% if can?(:unattend, eu.event) && eu.status == "attending" && !eu.event.past? %>
+            <% if can?(:unattend, eu.event) && (eu.status == "attending" || eu.status == "attended" || eu.status == "no_show") %>
               <%= link_to "Cancel their Attendance", unattend_event_path(eu.event,user_id: @user.id), method: :patch %>
             <% end %>
         </li>

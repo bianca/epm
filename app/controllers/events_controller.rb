@@ -281,7 +281,7 @@
     if params["user_id"].present?
       user = User.find(params["user_id"])
     end
-    if params["user_id"].present? && can?(:unattend, @event)
+    if params["user_id"].present? && can?(:unattend, @event) 
       @event.unattend user
       redirect_to user, notice: user.fname + ' has been marked as not attending.'
     else 
