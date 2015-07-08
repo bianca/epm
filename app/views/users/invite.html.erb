@@ -7,7 +7,7 @@
       <% if event.start.present? %>
         <small><%= relative_time event %></small>
       <% end %>
-     <%= link_to "Invite to #{Configurable.event.titlecase}", user_invite_path(event_id: event.id), {class: "button"} %>
+     <%= link_to "Add to #{Configurable.event.titlecase}", user_invite_path(event_id: event.id), {class: "button"} %>
     </li>
   <% end %>
 </ol>
