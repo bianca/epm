@@ -25,6 +25,10 @@ module EventsHelper
     datetime.strftime('%l:%M %p').strip
   end
 
+  def absolute_time(datetime)
+    datetime.strftime('on %A %B %e, %Y at %l:%M %p').strip
+  end
+
   def relative_time(event)
     str = time_ago_in_words event.start
     event.past? ? "#{str} ago" : "in #{str}"

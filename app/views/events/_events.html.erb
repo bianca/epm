@@ -4,7 +4,7 @@
     <li<%= " data-lat=\"#{coords[0]}\" data-lng=\"#{coords[1]}\"".html_safe if coords %>>
       <%= link_to event.display_name(current_user), event %>
       <% if event.start.present? %>
-        <small><%= relative_time event %></small>
+        <small><%= absolute_time event.start %></small>
       <% end %>
     </li>
   <% end %>
