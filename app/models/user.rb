@@ -98,7 +98,7 @@ class User < ActiveRecord::Base
       .reorder('MAX(event_users.updated_at) DESC, COUNT(users.id)')
   }
   def no_show_count
-    event_users.where(status: EventUser.statuses[:no_show]).count
+    self.event_users.where(status: EventUser.statuses[:no_show]).count
   end
 
   has_many :event_users, dependent: :destroy
@@ -107,7 +107,7 @@ class User < ActiveRecord::Base
       where('event_users.status' => EventUser.statuses[:attended]).where('events.status = ?', Event.statuses[:approved])
     }, through: :event_users, source: :event
   has_many :participated_events_this_year, -> { # events where a user was marked as having attended (and thus in the past and not cancelled)
-      where('event_users.status' => EventUser.statuses[:attended]).where('events.status = ?', Event.statuses[:approved]).where('YEAR(events.start) = ?', Time.now.year)
+      where('event_users.status' => EventUser.statuses[:attended]).where('events.status = ?', Event.statuses[:approved]).where("events.start >= ? and events.start <= ?", "#{Time.now.year}0101", "#{Time.now.year}1231")
     }, through: :event_users, source: :event
 
 
@@ -166,11 +166,11 @@ class User < ActiveRecord::Base
     n.present? ? n : '(no name given)'
   end
 
-  def priority 
-    e = self.participated_events_this_year
+  def priority
+    e = self.participated_events_this_year.count
     if self.no_show_count > 2 
       return 4
-    elsif e > 3
+    elsif e >= 3
       return 3
     elsif e == 2
       return 2

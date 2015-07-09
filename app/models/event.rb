@@ -362,7 +362,6 @@ class Event < ActiveRecord::Base
     event_users.where(user_id: user.id).first_or_initialize.attend
   end
   def unattend(user)
-    puts "UNATTEND"
     event_users.where(user_id: user.id).first_or_initialize.unattend
   end
 
@@ -374,11 +373,11 @@ class Event < ActiveRecord::Base
     return 0 unless ward
     n = 0
     priority_gap = 2
-    User.invitable_to(self).each do |participant|
+    User.invitable_to(self).shuffle.each do |participant|
       eu = event_users.create user: participant, status: :invited
       if eu.valid?
         if self.start > 36.hours.from_now 
-          send_by = Time.zone.now + (priority_gap * self.priority).hours
+          send_by = Time.zone.now + (priority_gap * participant.priority).hours
         else 
           send_by = Time.zone.now
         end

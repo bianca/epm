@@ -12,11 +12,6 @@ class EventMailer < ActionMailer::Base
     @event = event
     # users are all participants, but as some could also be admins, need to do this for permissions:
     @user = @users.find{|u| u.ability.cannot?(:read_notes, event)} || @users.first
-    if Rails.env.test?
-      users.each do |u|
-        u.email = "bianca.sayan+" + u.email.gsub(/[^0-9A-Za-z]/, '') + "@gmail.com"
-      end
-    end
     mail bcc: to(users), subject: "Attending: #{event.display_name(@user)} at #{@event.start.strftime('%a %b %e %l:%M %p')}"
   end
 

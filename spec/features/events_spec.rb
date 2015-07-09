@@ -254,11 +254,10 @@ describe "Events" do
         login_as @admin
         @e = create :participatable_event
         visit user_path @participant
-        click_link "Invite to Event"
+        click_link "Add to Event"
         find("a[href='/users/#{@participant.id.to_s}/invite?event_id=#{@e.id.to_s}']").click
         visit user_path @participant
-        # have to figure out how to test this
-        #expect(page).to have_content @e.display_name(@participant).to_s + "  " + (@e.start.strftime '%A %B %e, %Y') + " (Approved) Invited"
+        expect(page).to have_content @e.display_name(@participant).to_s + "  " + (@e.start.strftime '%A %B %e, %Y') + " (Approved) Attending"
       end
       
 
@@ -269,6 +268,92 @@ describe "Events" do
           @participant = create :participant
           @e = create :participatable_event, coordinator: @coordinator
           @e.attend @participant
+        end
+
+        it "invites potential participants based on their priority" do
+          w = create :ward
+          # new user, no events
+          @participant_priority0 = create :participant
+          @participant_priority0.user_wards.create ward: w
+          # user, one event + one noshow
+          @participant_priority1 = create :participant
+          @participant_priority1.user_wards.create ward: w
+          @e_priority1_attend1 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu11 = @e_priority1_attend1.attend @participant_priority1
+          @e_priority1_attend1.take_attendance([@eu11.id])
+          @e_priority1_attend2 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @e_priority1_attend2.attend @participant_priority1
+          @e_priority1_attend2.take_attendance([])
+          # user, two events + two noshow
+          @participant_priority2 = create :participant
+          @participant_priority2.user_wards.create ward: w
+          @e_priority2_attend1 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu21 = @e_priority2_attend1.attend @participant_priority2
+          @e_priority2_attend1.take_attendance([@eu21.id])
+          @e_priority2_attend2 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu22 = @e_priority2_attend2.attend @participant_priority2
+          @e_priority2_attend2.take_attendance([@eu22.id])
+
+          @e_priority2_attend3 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @e_priority2_attend3.attend @participant_priority2
+          @e_priority2_attend3.take_attendance([])
+          @e_priority2_attend4 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @e_priority2_attend4.attend @participant_priority2
+          @e_priority2_attend4.take_attendance([])
+          # user, 3+ events
+          @participant_priority3 = create :participant
+          @participant_priority3.user_wards.create ward: w
+          @e_priority3_attend1 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu31 = @e_priority3_attend1.attend @participant_priority3
+          @e_priority3_attend1.take_attendance([@eu31.id])
+          @e_priority3_attend2 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu32 = @e_priority3_attend2.attend @participant_priority3
+          @e_priority3_attend2.take_attendance([@eu32.id])
+          @e_priority3_attend3 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu33 = @e_priority3_attend3.attend @participant_priority3
+          @e_priority3_attend3.take_attendance([@eu33.id])
+          # user, 4 events, 3 noshows
+          @participant_priority4 = create :participant
+          @participant_priority4.user_wards.create ward: w
+          @e_priority4_attend1 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu41 = @e_priority4_attend1.attend @participant_priority4
+          @e_priority4_attend1.take_attendance([@eu41.id])
+          @e_priority4_attend2 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu42 = @e_priority4_attend2.attend @participant_priority4
+          @e_priority4_attend2.take_attendance([@eu42.id])
+          @e_priority4_attend3 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu43 = @e_priority4_attend3.attend @participant_priority4
+          @e_priority4_attend3.take_attendance([@eu43.id])
+          @e_priority4_attend4 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @eu44 = @e_priority4_attend4.attend @participant_priority4
+          @e_priority4_attend4.take_attendance([@eu44.id])
+
+          @e_priority4_attend5 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @e_priority4_attend5.attend @participant_priority4
+          @e_priority4_attend5.take_attendance([])
+          @e_priority4_attend6 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @e_priority4_attend6.attend @participant_priority4
+          @e_priority4_attend6.take_attendance([])
+          @e_priority4_attend7 = create :participatable_past_event, coordinator: @coordinator, start: 1.week.ago
+          @e_priority4_attend7.attend @participant_priority4
+          @e_priority4_attend7.take_attendance([])
+
+          e = create :participatable_event, ward: w, start: 1.week.from_now
+          e.invite
+          @invitations = Invitation.where(event_id: e.id)
+
+          expect(@invitations.where(user_id: @participant_priority1.id ).first.send_by - @invitations.where(user_id: @participant_priority0.id ).first.send_by).to be > 1.hour
+          expect(@invitations.where(user_id: @participant_priority1.id ).first.send_by - @invitations.where(user_id: @participant_priority0.id ).first.send_by).to be < 3.hours
+
+          expect(@invitations.where(user_id: @participant_priority2.id ).first.send_by - @invitations.where(user_id: @participant_priority1.id ).first.send_by).to be > 1.hour
+          expect(@invitations.where(user_id: @participant_priority2.id ).first.send_by - @invitations.where(user_id: @participant_priority1.id ).first.send_by).to be < 3.hours
+
+          expect(@invitations.where(user_id: @participant_priority3.id ).first.send_by - @invitations.where(user_id: @participant_priority2.id ).first.send_by).to be > 1.hour
+          expect(@invitations.where(user_id: @participant_priority3.id ).first.send_by - @invitations.where(user_id: @participant_priority2.id ).first.send_by).to be < 3.hours
+
+          expect(@invitations.where(user_id: @participant_priority4.id ).first.send_by - @invitations.where(user_id: @participant_priority3.id ).first.send_by).to be > 1.hour
+          expect(@invitations.where(user_id: @participant_priority4.id ).first.send_by - @invitations.where(user_id: @participant_priority3.id ).first.send_by).to be < 3.hours
+
         end
 
         it "separately emails coordinator and participants upon significantly changing an event" do

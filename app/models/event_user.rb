@@ -27,7 +27,7 @@ class EventUser < ActiveRecord::Base
 
 
   def attend
-    return false if event.past?
+    #return false if event.past?
     # todo: does not handle :requested status
     was_attending = attending?
     if [nil, 'invited', 'not_attending', 'withdrawn', 'cancelled'].include? status

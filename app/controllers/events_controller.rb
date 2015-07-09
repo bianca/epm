@@ -281,7 +281,7 @@
     if params["user_id"].present?
       user = User.find(params["user_id"])
     end
-    if params["user_id"].present? && can?(:unattend, @event) 
+    if params["user_id"].present? && can?(:unattend, @event)
       @event.unattend user
       redirect_to user, notice: user.fname + ' has been marked as not attending.'
     else 
@@ -312,7 +312,7 @@
 
     def event_params
       # should actually only enable :status to be set by admin. todo
-      params.require(:event).permit(:name, :description, :notes, :start, :start_day, :start_time_12, :start_time_p, :duration, :finish, :equipment_set_id, :agency_id, :coordinator_id, :notify_of_changes, :status, :address, :lat, :lng, :hide_specific_location, :min, :max, :ward_id, tree_ids: [])
+      params.require(:event).permit(:name, :description, :notes, :start, :start_day, :start_time_12, :start_time_p, :duration, :finish, :equipment_set_id, :agency_id, :coordinator_id, :notify_of_changes, :status, :address, :lat, :lng, :hide_specific_location, :min, :max, :ward_id, :urgent_invite, tree_ids: [])
     end
 
 end
