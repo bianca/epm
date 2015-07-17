@@ -1,31 +1,25 @@
-<% title 'Equipment Sets' %>
+<% title 'Equipment Sets' %> 
 <div style="float: right">
 <%= link_to 'New Equipment Set', new_equipment_set_path, {class: 'button blue'} %>
 </div>
-<table style="width: 80%; margin-left: 10%; margin-right: 10%"> 
-  <thead>
-    <tr>
-      <th style="width: 20%; text-align: left">Title</th>
-      <th style="width: 40%; text-align: left">Description</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
 
-  <tbody>
-    <% @equipment_sets.each do |equipment_set| %>
-      <tr>
-        <td style="font-weight: bold"><%= equipment_set.title %></td>
-        <td style="font-weight: none"><%= equipment_set.description %></td>
-        <% if can?(:read, equipment_set) %>
-          <td><%= link_to 'Show', equipment_set %></td>
-        <% end %>
-        <% if can?(:edit, equipment_set) %>
-          <td><%= link_to 'Edit', edit_equipment_set_path(equipment_set) %></td>
-        <% end %>
-        <% if can?(:edit, equipment_set) %>
-          <td><%= link_to 'Delete', equipment_set, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        <% end %>
-      </tr>
+<% @equipment_sets.each do |equipment_set| %>
+  <div class="block" style="margin-left: 20%; margin-right: 20%;padding-bottom: 30px">
+    <h1><%= equipment_set.title %></h1>
+    <p><%= equipment_set.description %></p>
+    <% if can?(:read, equipment_set) || can?(:edit, equipment_set) || can?(:delete, equipment_set) %>
+      <div style="float: right; clear: both; height: 40px">
+      <% if can?(:read, equipment_set) %>
+        <%= link_to 'Show', equipment_set %>
+      <% end %>
+      <% if can?(:edit, equipment_set) %>
+        <%= link_to 'Edit', edit_equipment_set_path(equipment_set) %>
+      <% end %>
+      <% if can?(:delete, equipment_set) %>
+        <%= link_to 'Delete', equipment_set, method: :delete, data: { confirm: 'Are you sure?' } %>
+      <% end %>
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
+<% end %>
+

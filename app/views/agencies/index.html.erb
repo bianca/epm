@@ -2,33 +2,27 @@
 <div style="float: right">
   <%= link_to 'New Agency', new_agency_path, {class: 'button blue'} %>
 </div>
-<table style="width: 80%; margin-left: 10%; margin-right: 10%">
-  <thead>
-    <tr>
-      <th style="width: 20%; text-align: left">Title</th>
-      <th style="width: 40%; text-align: left">Description</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
 
-  <tbody>
-    <% @agencies.each do |agency| %>
-      <tr>
-        <td style="font-weight: bold"><%= agency.title %></td>
-        <td style="font-weight: none"><%= agency.description %></td>
-        <% if can?(:read, agency) %>
-          <td><%= link_to 'Show', agency %></td>
+
+<% @agencies.each do |agency| %>
+    <div class="block" style="margin-left: 20%; margin-right: 20%;padding-bottom: 30px">
+      <h1><%= agency.title %></h1>
+      <p><%= agency.description %></p>
+      <% if can?(:read, agency) || can?(:edit, equipment_set) || can?(:delete, equipment_set) %>
+        <div style="float: right; clear: both; height: 40px">
+        <% if can?(:read, agency)  %>
+          <%= link_to 'Show', agency %>
         <% end %>
         <% if can?(:edit, agency) %>
-          <td><%= link_to 'Edit', edit_agency_path(agency) %></td>
+          <%= link_to 'Edit', edit_agency_path(agency) %>
         <% end %>
         <% if can?(:edit, agency) %>
-          <td><%= link_to 'Delete', agency, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+          <%= link_to 'Delete', agency, method: :delete, data: { confirm: 'Are you sure?' } %>
         <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+        </div>
+      <% end %>        
+    </div>
+<% end %>
 
 <br>
 

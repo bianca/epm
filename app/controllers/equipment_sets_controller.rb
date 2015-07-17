@@ -27,12 +27,11 @@ class EquipmentSetsController < ApplicationController
 
   def update
     @equipment_set.update(equipment_set_params)
-    respond_with(@equipment_set)
+    redirect_to @equipment_set
   end
 
   def destroy
     @equipment_set.destroy
-    respond_with(@equipment_set)
   end
 
   private 
