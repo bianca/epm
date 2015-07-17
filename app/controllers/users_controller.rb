@@ -91,6 +91,7 @@ class UsersController < ApplicationController
     if params['event_id']
       @event = Event.find(params['event_id'])
       eu = @event.event_users.create user: @user, status: :attending
+      @event.calculate_participants
       if eu.valid?
         EventMailer.attend(@event, [@user]).deliver
       end
