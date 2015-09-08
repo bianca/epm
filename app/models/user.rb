@@ -3,13 +3,44 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable, :recoverable, :rememberable, :trackable, :validatable
 
   strip_attributes
-
-#  attr_accessor :signed_waiver
+ 
   attr_accessor :participate_in_picks
   attr_accessor :add_trees  
   
   validates :waiver, :acceptance => { :accept => true }, if: (:new_record? && :picks?)
   validates :email, :fname, :lname, :phone, presence: true
+
+
+  validate :hasPurpose
+
+  def hasPurpose
+     if add_trees == "0" && participate_in_picks == "0"
+      errors.add(:base, "You must choose to either 'participate in picks' or 'add trees'")
+     end
+  end
+
+
+  enum ladder: {
+    :yes => 1,
+    :borrow => 2,
+    :no => 3
+  }
+
+  def self.ladder_show_labels 
+  {
+    "has a ladder" => :yes,
+    "can borrow a ladder from a neighbour" => :borrow,
+    "does not have a ladder" => :no
+  }
+  end
+
+  def self.ladder_labels 
+  {
+    "Yes" => :yes,
+    "I can borrow one from a neighbour" => :borrow,
+    "No" => :no
+  }
+  end
 
   def picks?
     participate_in_picks == "1"
@@ -108,11 +139,11 @@ class User < ActiveRecord::Base
   has_many :roles, dependent: :destroy
   accepts_nested_attributes_for :roles
   attr_accessor :no_roles
-  after_create :set_default_role, if: "roles.empty? && !no_roles"
+  after_create :set_default_role, if: "roles.empty? && !no_roles" 
   def set_default_role
    if self.class.count == 1
       self.roles.create name: :admin
-    else
+    elsif self.waiver? && self.picks?
       self.roles.create name: :participant
     end
   end

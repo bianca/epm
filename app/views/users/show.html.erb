@@ -83,7 +83,7 @@
 
   <% if @user.event_users.any? %>
     <ol class="unordered">
-      <% @user.event_users.joins(:event).order('"events"."start" asc').each do |eu| %>
+      <% @user.event_users.joins(:event).where(status: [EventUser.statuses[:attending], EventUser.statuses[:attended], EventUser.statuses[:no_show]]).order('events.start asc').each do |eu| %>
         <li>
           <%= link_to eu.event.display_name(current_user).to_s + "  " + date(eu.event.start).to_s, eu.event %> (<%=eu.event.status.capitalize %>) <span class="label <%=eu.status %>"> <%=event_user_status(eu.status) %></span>
             <% if can?(:unattend, eu.event) && eu.status == "attending" && !eu.event.past? %>
@@ -93,7 +93,39 @@
       <% end %>
     </ol>
   <% end %>
+
 <% end %>
+
+<% if current_user.has_role?(:admin) %>
+
+    <% @otrees = Tree.where({owner: @user}) %>
+    <% puts @otrees.to_yaml %>
+    <% if @otrees.any? %>
+      <h2> Trees on their Property </h2>
+      <ol class="unordered">
+        <% @otrees.each do |t| %>
+          <li>
+            <%= link_to t.species, t %>
+          </li>
+        <% end %>
+      </ol>
+    <% end %>
+
+
+    <% @strees = Tree.where({submitter: @user}) %>
+    <% if @strees.any? %>
+      <h2> Trees they Manage </h2>
+      <ol class="unordered">
+        <% @strees.each do |t| %>
+          <li>
+            <%= link_to t.species + " - " + t.owner.address, t %>
+          </li>
+        <% end %>
+      </ol>
+    <% end %>
+
+<% end %>
+
 
 <% if current_user.has_role?(:admin) %>
   <p>

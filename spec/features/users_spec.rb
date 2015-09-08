@@ -131,6 +131,28 @@ describe "Users" do
         expect(page).to have_content @participant.display_name
       end
 
+      it "has a list of events attended" do
+        @e = create :participatable_event
+        eu = @e.attend @participant
+        @e.update(start: 1.month.ago, finish: 1.month.ago + 1.hour)
+        eu.update status: :attended
+        visit root_path
+        click_link 'My Profile'
+        expect(current_path).to eq user_path @participant
+        expect(page).to have_content @e.display_name(@participant).to_s + "  " + (@e.start.strftime '%A %B %e, %Y') + " (Approved) Attended"
+      end
+
+      it "has a list of events attending" do
+        @e = create :participatable_event
+        eu = @e.attend @participant
+        @e.update(start: 1.month.from_now, finish: 1.month.from_now + 1.hour)
+        eu.update status: :attending
+        visit root_path
+        click_link 'My Profile'
+        expect(current_path).to eq user_path @participant
+        expect(page).to have_content @e.display_name(@participant).to_s + "  " + (@e.start.strftime '%A %B %e, %Y') + " (Approved) Attending"
+      end
+
       it "can access profile page from /me" do
         visit me_path
         expect(current_path).to eq user_path @participant
@@ -179,6 +201,7 @@ describe "Users" do
         create :ward, name: 'ward one'
         create :ward, name: 'ward two'
         visit edit_user_path @participant
+        puts source.to_yaml
         check 'ward one'
         click_button 'Save'
         expect(page).to have_content 'ward one'
@@ -238,6 +261,20 @@ describe "Users" do
         expect(page).to have_content 'Sorry'
       end
 
+      it "allows admin to delete profile" do
+        login_as create :admin
+        visit user_path @u
+        expect(page).to have_content 'Delete'
+        click_link "Delete"
+        expect(current_path).to eq users_path
+      end
+
+      it "does not allow participant to delete profile" do
+        login_as @u
+        visit user_path @u
+        expect(page).not_to have_content 'Delete'
+      end
+      
     end
 
     context "filling out" do

@@ -47,8 +47,9 @@ class Event < ActiveRecord::Base
   def can_edit_attribute?(attribute, user)
     return false unless user.ability.can?(:edit, self)
     return true if user.has_role?(:admin)
+    return true if user.has_role?(:coordinator) && ((coordinator.present? && coordinator == user) || coordinator.blank?)
     return false unless [:start, :finish].include?(attribute)
-    proposed? || start.blank?
+    #proposed? || start.blank?
   end
 
   def can_edit_something?(user)
@@ -311,7 +312,6 @@ class Event < ActiveRecord::Base
     true
   end
   after_save do |event|
-    puts event
     # check against max
     if event.max_was_changed && event.can_accept_participants?
       if !event.full? && event.waitlisted.any?

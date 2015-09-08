@@ -4,7 +4,7 @@
 
   <%= start_cols %>
 
-  <% if @event.new_record? && can?(:approve, @event) %>
+  <% if can?(:approve, @event) %>
     <fieldset>
       <legend style="float:left">Status</legend>
       <label style="margin:0 0.7em"><%= f.radio_button :status, :proposed %>Proposed</label>
@@ -19,7 +19,7 @@
     </div>
   <% end %>
 
-  <% if @event.can_edit_attribute? :start, current_user %>
+  <% if @event.new_record? || (current_user.has_role? :admin) || @event.start.blank? %>
     <fieldset id="when">
       <div class="field">
         <%= f.label :start_day, 'Date' %>
@@ -57,6 +57,11 @@
         $('#time_fields').css('visibility', 'hidden');
       <% end %>
     <% end %>
+  <% else %>
+    <%= date @event.start %> <small><%= relative_time @event %></small>
+    <br>
+    <%= time @event.start %> to <%= time @event.finish %>
+    <small>for <%= pluralize @event.duration_hours, 'hour' %></small>
   <% end %>
 
   <% if @event.can_edit_attribute?(:notes, current_user) || can?(:read_notes, @event) && @event.notes %>
@@ -84,7 +89,7 @@
   <% else %>
     <% if @event.can_edit_attribute? :address, current_user %>
       <%= render layout: 'shared/address_form', locals: { f: f } do %>
-        <% if @event.can_edit_attribute? :hide_specific_location, current_user %>
+        <% if can?(:hide_specific_location, @event) %>
           <%= f.check_box :hide_specific_location %>
         <%= f.label :hide_specific_location, 'Hide specific location for non-attendees', style: 'font-weight:normal' %>
         <% end %>
@@ -99,7 +104,7 @@
     <% end %>
   <% end %>
 
-  <% if @tree %>
+  <% if false # @tree %>
 
     <% if Tree.types.include?(@tree.species.capitalize.to_s) %>
       <%= image_tag("fruits/#{@tree.species.downcase}32.png") %>
@@ -117,7 +122,9 @@
     <p><%= @tree.additional %></p>
 
   <% end %>
-<!--
+
+
+<% if @event.can_edit_attribute? :trees, current_user %>
 <h1>Trees already added to this pick</h1>  
 <div id="selectedTrees" style="width: 100%">
 <table>
@@ -165,7 +172,6 @@
   </tbody>
 </table>
 </div>
--->
   <!-- Find closest trees, make a list of all trees closest to property  -->
   <script language="">
 
@@ -246,12 +252,12 @@
 
     })
   </script>
-  <!--
+
   <h1 style="margin-top: 40px">Add nearby trees to this pick</h1>
   <div id="searchTrees">
       <%= render 'trees/formlist' %>
   </div>
--->
+<% end %>
   <%= end_cols %>
 
   <%= start_cols %>
@@ -284,19 +290,6 @@
         coordinators = User.where id: current_user.id
       end
     %>
-    <% content_for :js_ready do %>
-      var checkTimeForSet = function () {
-        if ($('#time_fields').css('visibility') != 'hidden') {
-          $("#equipment_set").show();
-        } else {
-          $("#equipment_set").hide();
-        }
-      }
-      $('#time_fields').change(function () {
-        checkTimeForSet();
-      });
-      checkTimeForSet();
-    <% end %>
     <% if EquipmentSet.any? %>
       <fieldset id="equipment_set">
         <%= f.label :equipment_set_id, style: 'font-weight:normal' %>
@@ -347,6 +340,7 @@
 
   <%= end_cols %>
 
+
   <%= cancel %>
   <% if @event.persisted? && @event.users.reject{|u|u==current_user}.any? %>
     <%= submit 'Save & Notify of Changes', title: 'Note: Notifications will still only be sent if changes are made to the name, description, notes, or location.' %>
@@ -354,5 +348,6 @@
   <% else %>
     <%= submit %>
   <% end %>
+  
 
 <% end %>

@@ -65,7 +65,7 @@ class UsersController < ApplicationController
   def update
     if params['commit'] && params['commit'].downcase == 'cancel'
       redirect_to @user, notice: 'Changes not saved.'
-    elsif @user.update params.require(:user).permit(:fname, :lname, :email, :phone, :address, :snail_mail, :lat, :lng, :home_ward, :participate_in_picks, :add_trees, :password_confirmation, :waiver, :admin_notes, :do_not_contact_reason, ward_ids: [])
+    elsif @user.update params.require(:user).permit(:fname, :lname, :email, :phone, :address, :snail_mail, :lat, :lng, :home_ward, :participate_in_picks, :add_trees, :ladder, :password_confirmation, :waiver, :admin_notes, :do_not_contact_reason, ward_ids: [])
       # note the params permitted above need to also be listed in the registrations controller
       redirect_to @user, notice: 'Profile was successfully updated.'
     else
@@ -97,9 +97,6 @@ class UsersController < ApplicationController
       redirect_to @user, notice: 'User invited.'
     else
       @events = Event.accepting_participants
-          .joins("LEFT JOIN event_users ON event_users.event_id = events.id")
-          #.where.not("event_users.user_id = " + @user.id.to_s)
-          #.group("events.id")
     end
   end
 

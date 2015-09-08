@@ -72,12 +72,18 @@ describe "Events" do
         expect(page).to have_content 'Sorry'
       end
 
-      it "prevents coordinators from creating events" do
+      it "allows coordinators to create events" do
         login_as create :coordinator
         visit root_path
-        expect(page).not_to have_content 'Add New Event'
+        expect(page).to have_content 'Add New Event'
         visit new_event_path
-        expect(page).to have_content 'Sorry'
+        expect(page).to have_content 'Name' 
+      end
+
+      it "prevents coordinators from creating events" do
+        login_as create :coordinator
+        visit new_event_path
+        expect(page).not_to have_content 'Status' 
       end
 
       it "selects a ward" do
@@ -243,6 +249,18 @@ describe "Events" do
         visit edit_event_path e
         expect(page).to have_content 'Sorry'
       end
+
+      it "does allow admin to manually invite participant to event" do
+        login_as @admin
+        @e = create :participatable_event
+        visit user_path @participant
+        click_link "Invite to Event"
+        find("a[href='/users/#{@participant.id.to_s}/invite?event_id=#{@e.id.to_s}']").click
+        visit user_path @participant
+        # have to figure out how to test this
+        #expect(page).to have_content @e.display_name(@participant).to_s + "  " + (@e.start.strftime '%A %B %e, %Y') + " (Approved) Invited"
+      end
+      
 
       context "email notifications" do
 
@@ -426,15 +444,32 @@ describe "Events" do
         expect(page).not_to have_link 'Who' # you have to be the coordinator to see who is coming
       end
 
+      it "does allow coordinators to view no-shows" do
+        @e = create :participatable_event
+        eu = @e.attend @participant
+        @e.update(start: 1.month.ago, finish: 1.month.ago + 1.hour)
+        eu.update status: :no_show
+        login_as @admin
+        visit event_path @e
+        find("a[href='/events/#{@e.id.to_s}/who']").click
+        within '#no_show_participants' do
+          expect(page).to have_content @participant.fname + " " + @participant.lname
+        end
+      end
+
       it "allows a coordinator to edit an event they are coordinating" do
         e = create :event, status: :proposed, coordinator: @coordinator
         login_as @coordinator
         visit edit_event_path e
         name = 'some name'
-        fill_in 'Time', with: '2:12'
+        fill_in 'Name', with: 'Change Name'
+        fill_in 'Description', with: 'Change Description'
+        fill_in 'Notes', with: 'Change Notes'
         click_button 'Save'
         expect(current_path).to eq event_path e
-        expect(page).to have_content '2:12'
+        expect(page).to have_content 'Change Name'
+        expect(page).to have_content 'Change Description'
+        expect(page).to have_content 'Change Notes'
       end
 
       it "does not allow a coordinator to edit an event with another coordinator" do
@@ -467,17 +502,34 @@ describe "Events" do
         expect(page).to have_field 'Max'
         expect(page).to have_field 'Hide specific location'
         logout
+        # changed because now coordinators can create events. if they are the coordinator for that event they should be able to edit
         login_as @coordinator
         visit edit_event_path e
-        expect(page).to have_field 'Time'
-        expect(page).not_to have_field 'Name'
-        expect(page).not_to have_field 'Description'
-        expect(page).not_to have_field 'Notes'
-        expect(page).not_to have_field 'Min'
-        expect(page).not_to have_field 'Max'
+        expect(page).not_to have_field 'Time'
+        expect(page).to have_field 'Name'
+        expect(page).to have_field 'Description'
+        expect(page).to have_field 'Notes'
+        expect(page).to have_field 'Min'
+        expect(page).to have_field 'Max'
         expect(page).not_to have_field 'Hide specific location'
       end
 
+    end
+
+    context "admin" do 
+      it "does allow admin to cancel attendance on behalf of a participant" do
+        @e = create :participatable_event
+        eu = @e.attend @participant
+        @e.update(start: 1.month.from_now, finish: 1.month.from_now + 1.hour)
+        eu.update status: :attending
+        login_as @admin
+        visit user_path @participant
+        expect(page).to have_content @e.display_name(@participant).to_s + "  " + (@e.start.strftime '%A %B %e, %Y') + " (Approved) Attending Cancel their Attendance"
+        click_link "Cancel their Attendance"
+        visit event_path @e
+        find("a[href='/events/#{@e.id.to_s}/who']").click
+        expect(page).not_to have_content @participant.fname + " " + @participant.lname
+      end
     end
 
     context "geocoding" do
@@ -784,16 +836,27 @@ describe "Events" do
     end
 
     context "deleting" do
-
       it "allows admin to delete an event" do
         e = create :event
         login_as @admin
         visit event_path e
-        click_link 'Delete'
+        click_link 'Cancel or Delete'
         expect(current_path).to eq cancel_event_path e
-        click_button 'Delete Event'
-        expect(current_path).to eq events_path
-        expect(page).to have_content "#{e.display_name} deleted"
+        click_button 'Permanently Delete Event'
+        expect(current_path).to eq dashboard_events_path
+        expect(page).to have_content "#{Configurable.event.capitalize} deleted"
+        expect(page).not_to have_link e.display_name
+      end
+
+      it "allows admin to cancel an event" do
+        e = create :event
+        login_as @admin
+        visit event_path e
+        click_link 'Cancel or Delete'
+        expect(current_path).to eq cancel_event_path e
+        click_button 'Cancel Event'
+        expect(current_path).to eq event_path(e.id)
+        expect(page).to have_content "Event cancelled. Cancelled: #{e.display_name}"
         expect(page).not_to have_link e.display_name
       end
 

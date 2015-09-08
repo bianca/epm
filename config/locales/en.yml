@@ -23,6 +23,7 @@ en:
   activerecord:
     attributes:
       user:
+        participate_in_picks: ""
         phone: Phone Number
         email: E-mail Address
         fname: First Name
