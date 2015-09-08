@@ -26,6 +26,7 @@ class AgenciesController < ApplicationController
 
   def update
     @agency.update(agency_params)
+    redirect_to @agency
   end
 
   def destroy

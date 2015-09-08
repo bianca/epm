@@ -372,10 +372,16 @@ class Event < ActiveRecord::Base
   def invite
     return 0 unless ward
     n = 0
-    User.invitable_to(self).each do |participant|
+    priority_gap = 2
+    User.invitable_to(self).shuffle.each do |participant|
       eu = event_users.create user: participant, status: :invited
       if eu.valid?
-        Invitation.create event: self, user: participant, send_by: Time.zone.now
+        if self.start > 36.hours.from_now 
+          send_by = Time.zone.now + (priority_gap * participant.priority).hours
+        else 
+          send_by = Time.zone.now
+        end
+        Invitation.create event: self, user: participant, send_by: send_by
         n += 1
       end
     end

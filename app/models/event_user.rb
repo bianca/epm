@@ -27,7 +27,7 @@ class EventUser < ActiveRecord::Base
 
 
   def attend
-    return false if event.past?
+    #return false if event.past?
     # todo: does not handle :requested status
     was_attending = attending?
     if [nil, 'invited', 'not_attending', 'withdrawn', 'cancelled'].include? status
@@ -40,16 +40,15 @@ class EventUser < ActiveRecord::Base
   end
 
   def unattend(action_by_self = true)
-    return false if event.past?
     was_attending = attending?
     if invited?
       self.status = action_by_self ? :not_attending : :denied
-    elsif attending?
+    elsif attending? || no_show?
       self.status = action_by_self ? :cancelled : :denied
     elsif waitlisted? || requested?
       self.status = action_by_self ? :withdrawn : :denied
     end
-    if self.status && save && was_attending && !attending?
+    if self.status && save && was_attending && !attending? && !event.past?
       event.add_from_waitlist if event.time_until > 5.hours # todo: allow configurability of this number
       EventMailer.unattend(event, user).deliver unless action_by_self
       event.calculate_participants

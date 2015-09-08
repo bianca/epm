@@ -63,9 +63,13 @@
       if current_user.has_any_role? :admin, :participant
         q = Event.accepting_participants
         q = q.participatable_by(current_user) unless current_user.has_role? :admin
+        @sections << { q: q, name: "#{Configurable.event.pluralize.titlecase} Accepting More #{Configurable.participant.pluralize.titlecase}", id: 'not_full' }
+
+        q = Event.needing_participants
+        q = q.participatable_by(current_user) unless current_user.has_role? :admin
         @sections << { q: q, name: "#{Configurable.event.pluralize.titlecase} Needing More #{Configurable.participant.pluralize.titlecase}", id: 'not_full' }
 
-        q = Event.participatable.not_past.where(reached_max: true).limit(max)
+        q = Event.participatable.not_past.where(reached_max: true)
         q = q.participatable_by(current_user) unless current_user.has_role? :admin
         @sections << { q: q, name: "#{Configurable.event.pluralize.titlecase} That Are Full (Join Waitlist)", id: 'full' }
       end
@@ -312,7 +316,7 @@
 
     def event_params
       # should actually only enable :status to be set by admin. todo
-      params.require(:event).permit(:name, :description, :notes, :start, :start_day, :start_time_12, :start_time_p, :duration, :finish, :equipment_set_id, :agency_id, :coordinator_id, :notify_of_changes, :status, :address, :lat, :lng, :hide_specific_location, :min, :max, :ward_id, tree_ids: [])
+      params.require(:event).permit(:name, :description, :notes, :start, :start_day, :start_time_12, :start_time_p, :duration, :finish, :equipment_set_id, :agency_id, :coordinator_id, :notify_of_changes, :status, :address, :lat, :lng, :hide_specific_location, :min, :max, :ward_id, :urgent_invite, tree_ids: [])
     end
 
 end

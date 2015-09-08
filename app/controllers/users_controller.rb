@@ -90,11 +90,12 @@ class UsersController < ApplicationController
     @user = User.find(params['user_id'])
     if params['event_id']
       @event = Event.find(params['event_id'])
-      eu = @event.event_users.create user: @user, status: :invited
+      eu = @event.event_users.create user: @user, status: :attending
+      @event.calculate_participants
       if eu.valid?
-        Invitation.create event: @event, user: @user, send_by: Time.zone.now
+        EventMailer.attend(@event, [@user]).deliver
       end
-      redirect_to @user, notice: 'User invited.'
+      redirect_to @user, notice: 'User added.'
     else
       @events = Event.accepting_participants
     end
