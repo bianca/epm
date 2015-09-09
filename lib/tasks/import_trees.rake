@@ -130,13 +130,13 @@ task :importTrees => :environment do
 	    		t.ripen = row[34+gap].to_s.strip if row[34+gap].present?
 	    		if row[35+gap].present?	   
 	    			if row[35+gap] == "> 3 storeys (> 9 metres, 30 feet)"	
-	    				t.height = ">3" 	    			    			
+	    				t.height = 4  	    			    			
 	    			elsif row[35+gap] == "2-3 storeys (20-30 feet, 6-9 metres)"
-	    				t.height = "2-3" 	    				
+	    				t.height = 3 	    				
 	    			elsif row[35+gap] == "1 - 2 storeys (10-20 feet, 3-6 metres)" 		
-	    				t.height = "1-2" 
+	    				t.height = 2 
 	    			elsif row[35+gap] == "< 1 storey (< 10 feet, 3 metres)" 		
-	    				t.height = "<1" 
+	    				t.height = 1 
 	    			end
 	    		end	
 	  			t.pickable = true
