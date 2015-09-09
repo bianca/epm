@@ -120,7 +120,9 @@ task :importTrees => :environment do
 	  			else
 	  				t.owner_id = user_id1
 	    		end
-	    		if row[31+gap].present? && row[31+gap].to_s != "Other (specify below)"
+	    		if row[31+gap].to_s == "Please choose" || (row[31+gap].to_s == "Other (specify below)" && row[32+gap].to_s == "")
+	    			t.species = "Unknown"
+	    		elsif row[31+gap].present? && row[31+gap].to_s != "Other (specify below)"
 	    			t.species = row[31+gap].to_s.strip
 	    		elsif row[32+gap].present? 
 					t.species = row[32+gap].to_s.strip
