@@ -2,9 +2,9 @@
 <% if user.new_record? %>
   <fieldset>
     <!--<legend>How do you want to participate in Not Far From the Tree?</legend>-->
-    <label style="margin:0 0.7em"><%= f.check_box  :participate_in_picks, {hidden: true, checked: true} %><!--I want to participate in NFFTT picks--></label>
+    <label style="margin:0 0.7em"><%= f.check_box  :participate_in_picks %>I want to pick fruit</label>
     <br />
-    <label style="margin:0 0.7em"><%= f.check_box  :add_trees, {hidden: true} %><!--I want to add trees to NFFTT's tree database--></label>
+    <label style="margin:0 0.7em"><%= f.check_box  :add_trees %>I want to sign up a tree to be picked</label>
   </fieldset>
 <% end %>
 
@@ -45,36 +45,40 @@
       <div>
       <label style="font-weight:normal">
         <%= check_box_tag :add_to_mailing_list, true, false %>
-        Subscribe me to the Not Far From The Tree mailing list
+        Sign me up for Not Far From The Tree’s e-newsletter
       </label>
       </div>
-      <!--
-      <br />
-      You can tell me about picks by:
-      <div style="margin-left: 20px">
-        <label style="font-weight:normal">
-          <%= check_box_tag :can_email, true, user.new_record? %>
-          <b>Email</b>
-        </label>
-      </div>
-      <div style="margin-left: 20px">
-        <label style="font-weight:normal">
-          <%= check_box_tag :can_mail, true, user.new_record? %>
-          <b>Mail</b>
-        </label>
-      </div>
-      <div style="margin-left: 20px">
-        <label style="font-weight:normal">
-          <%= check_box_tag :can_phone, true, user.new_record? %>
-          <b>Phone</b>
-        </label>
-      </div>
-      -->
-    <% end %>  
-
+    <% end %>       
+    <% if !user.new_record? %>
+        <br />
+        You can tell me about <%=Configurable.event %> by:
+        <div style="margin-left: 20px">
+          <label style="font-weight:normal">
+            <%= f.check_box :can_email %>
+            <b>Email</b>
+          </label>
+        </div>
+        <div style="margin-left: 20px">
+          <label style="font-weight:normal">
+            <%= f.check_box :can_mail %>
+            <b>Mail</b>
+          </label>
+        </div>
+        <div style="margin-left: 20px">
+          <label style="font-weight:normal">
+            <%= f.check_box :can_phone %>
+            <b>Phone</b>
+          </label>
+        </div>
+      <% end %>        
+ 
+    <div class="field">
+      <%= f.label :contactnotes, "Additional Contact Information" %> <br>
+      <i>Do you have an alternate email address or phone number? Is there someone we should contact if we can’t reach you?</i>
+      <%= f.text_area :contactnotes %>
+    </div>
 <%= next_col %>
 
-<p style="font-style:italic"> We need your address to match you to close-by picks and to help you quickly add trees from your own property. </p>
 <script language="">
   var active_wards = <% if Configurable.active_wards.present? %> <%=Configurable.active_wards.split(",").to_json.html_safe %> <% else %> [] <% end %>
   $(document).ready(function () {
@@ -128,12 +132,14 @@
 
 <fieldset id="propertyNotesSection">
 <div class="field">
-  <%= f.label :propertynotes, "Property Notes" %>  <%= required %><br>
+  <%= f.label :propertynotes, "Is there anything we should be aware of while on the property for the pick?" %>  <br>
   <%= f.text_area :propertynotes %>
 </div>
 </fieldset>
 <fieldset id="ladderSection">
-  <legend>Do have a ladder on the property?</legend>
+  <legend>Do you have a ladder we can borrow for the pick?” 
+
+<br ><i>We transport equipment by bicycle so we often aren’t able to bring a ladder.</i></legend>
     <label style="margin:0 0.7em"><%= f.radio_button :ladder, :yes %>Yes</label>
     <label style="margin:0 0.7em"><%= f.radio_button :ladder, :borrow %>I can borrow one from a neighbour</label>
     <label style="margin:0 0.7em"><%= f.radio_button :ladder, :no %>No</label>
@@ -144,6 +150,21 @@
 </div>
 
 <% if Ward.any? %>
+  <script language="">
+    $(document).ready(function () {
+        if ($("#user_participate_in_picks").prop("checked") == false) {
+          $("#wards").hide()
+        }
+        $("#user_participate_in_picks").change(function (evt) {
+            if ($(this).prop("checked") == true) {
+              $("#wards").show()           
+            } else {
+              $("#wards").hide()      
+            }
+
+        })
+    })
+  </script>
   <fieldset id="wards">
     <legend>My Wards</legend>
     <p class="hint">

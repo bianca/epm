@@ -28,6 +28,11 @@ coordinator:
   type: string
   default: coordinator
 
+tree_registrant:
+  name: Tree registrant role name
+  type: string
+  default: tree registrant
+
 participant:
   name: Participant role name
   type: string

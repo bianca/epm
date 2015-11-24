@@ -143,12 +143,20 @@ class User < ActiveRecord::Base
   has_many :roles, dependent: :destroy
   accepts_nested_attributes_for :roles
   attr_accessor :no_roles
-  after_create :set_default_role, if: "roles.empty? && !no_roles" 
-  def set_default_role
+  after_create :set_contact_permissions
+  def set_contact_permissions 
+   self.can_email = true
+   self.can_mail = true
+   self.can_phone = true
+  end  
+  after_create :set_default_role #, if: "roles.empty? && !no_roles" 
+  def set_default_role 
    if self.class.count == 1
       self.roles.create name: :admin
     elsif self.waiver? && self.picks?
       self.roles.create name: :participant
+    elsif add_trees == "1"
+      self.roles.create name: :tree_registrant
     end
   end
   def has_role?(role_name)

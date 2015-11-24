@@ -133,11 +133,11 @@
 
 
 <h1>
-	Event Details   
+	<%=Configurable.event.titlecase.singularize %> Details   
 
 	<div style="float: right">
 	<% if can? :create, Event %>
-    	<%= link_to "Add New #{Configurable.event.titlecase} for this Tree", new_event_path({"tree_id" => @tree.id}), {class: "button"} %>
+    	<%= link_to "Add New #{Configurable.event.titlecase.singularize} for this Tree", new_event_path({"tree_id" => @tree.id}), {class: "button"} %>
   	<% end %>
   	</div>
 
@@ -198,9 +198,9 @@
 
 
   <% if can? :create, Event %>
-    <%= link_to "Add New #{Configurable.event.titlecase} for this Tree", new_event_path({"tree_id" => @tree.id}) %> |
+    <%= link_to "Add New #{Configurable.event.titlecase.singularize} for this Tree", new_event_path({"tree_id" => @tree.id}) %> |
   <% end %>
-  	<%= link_to 'Add a new tree with this location', copy_location_tree_path(@tree) %> |
+  	<%= link_to 'Add a new tree at this address', copy_location_tree_path(@tree) %> |
   	<%= link_to 'Add a new tree exactly like this', copy_tree_path(@tree) %> |
 	<%= link_to 'Edit', edit_tree_path(@tree) %> |
     <%= link_to 'Delete', @tree, method: :delete, data: { confirm: 'Are you sure?' } %> |

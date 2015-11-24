@@ -54,7 +54,7 @@ class Ability
         can :manage, Tree do |tree|
           tree.submitter == user || tree.owner == user
         end
-        cannot :index, Tree
+        #cannot :index, Tree
         can :create, Tree
       end
 
