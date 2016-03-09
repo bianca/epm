@@ -39,6 +39,7 @@ class TreesController < ApplicationController
     #render text: current_user.to_yaml
     #return
     @tree.owner = current_user
+    @tree.pickable = true
     #@tree.owner_id = current_user.id
   end
 
@@ -85,10 +86,13 @@ class TreesController < ApplicationController
   # POST /trees
   def create
     @tree = Tree.new tree_params
+    if @tree.pickable.blank?
+      @tree.pickable = true
+    end
     owner_params = params.require(:tree).permit(owner_attributes: [:id, :fname, :lname, :email, :phone, :ladder, :contactnotes, :propertynotes, :home_ward, :address, :lat, :lng])
     @tree.owner = User.find(owner_params["owner_attributes"]["id"].to_i)
     @tree.owner.attributes = owner_params["owner_attributes"]
-
+    puts @tree.relationship.to_yaml
     if @tree.owner.changed?
       # check if the name has changed, if so, create a new user
       if (@tree.owner.fname_changed? || @tree.owner.lname_changed?) && @tree.owner.email_changed?
@@ -108,7 +112,11 @@ class TreesController < ApplicationController
           new_user_hash['password'] = Devise.friendly_token.first(8)
           new_user = User.new(new_user_hash)
           new_user.skip_confirmation!
+
           new_user.save
+          if @tree.relationship == "tenant" || @tree.relationship == "friend" 
+            new_user.roles.create name: :tree_owner
+          end 
           @tree.owner_id = new_user.id
           @tree.submitter_id = current_user.id
         end
@@ -145,6 +153,6 @@ class TreesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def tree_params
-      params.require(:tree).permit(:height, :species, :species_other, :subspecies, :relationship, :treatment, :keep, :additional, :pickable, :not_pickable_reason)
+      params.require(:tree).permit(:height, :species, :species_other, :subspecies, :relationship, :treatment, :keep, :additional, :pickable, :not_pickable_reason, :ripen)
     end
 end

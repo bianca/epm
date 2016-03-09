@@ -33,6 +33,11 @@ tree_registrant:
   type: string
   default: tree registrant
 
+tree_owner:
+  name: Tree owner role name
+  type: string
+  default: tree owner
+
 participant:
   name: Participant role name
   type: string

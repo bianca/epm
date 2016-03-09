@@ -12,7 +12,7 @@
     <%= link_to 'Delete', user_path(@user), method: :delete, data: {confirm: 'Are you sure you want to delete this account?'}  %>
   <% end %>
   <% if can? :invite, @user %>
-    <%= link_to 'Add to Event', user_invite_path(@user) %>
+    <%= link_to "Add to #{Configurable.event.titlecase}", user_invite_path(@user) %>
   <% end %>
   <% if @user.id == current_user.id %>
     <%= link_to 'Change my password', edit_user_registration_path %>
@@ -118,7 +118,12 @@
       <ol class="unordered">
         <% @strees.each do |t| %>
           <li>
+            <% if t.species.present? %>
             <%= link_to t.species + " - " + t.owner.address, t %>
+            <% else %>
+            <%= link_to "Unknown - " + t.owner.address, t %>
+            <% end %>
+
           </li>
         <% end %>
       </ol>
@@ -134,6 +139,18 @@
   <p>
     <%=@user.admin_notes || "None" %> <br>
   </p>
+  <p>
+    <b>Property Notes: </b>
+  </p>
+  <p>
+    <%=@user.propertynotes || "None" %> <br>
+  </p>
+  <p>
+    <b>Contact Notes: </b>
+  </p>
+  <p>
+    <%=@user.contactnotes || "None" %> <br>
+  </p>  
 <% end %>
 
 

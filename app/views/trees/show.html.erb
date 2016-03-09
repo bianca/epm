@@ -34,7 +34,7 @@
 	<% if !@tree.pickable.nil? %>
 		
 		<p>
-		<% if @tree.pickable == true %>
+		<% if @tree.pickable %>
   			This tree is pickable.
   		<% else %>
   			<b style="color: #ff0000">This tree is not pickable.</b><br />
@@ -133,7 +133,7 @@
 
 
 <h1>
-	<%=Configurable.event.titlecase.singularize %> Details   
+	Property Details   
 
 	<div style="float: right">
 	<% if can? :create, Event %>
@@ -167,9 +167,6 @@
 
 	<h3>Treatment</h3>
 	<p><%= @tree.treatment %></p>
-
-	<h3>Additional Notes</h3>
-	<p><%= @tree.additional %></p>
 
 </div>
 

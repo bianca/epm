@@ -99,6 +99,7 @@ task :importTrees => :environment do
 			    u2.skip_confirmation!
 			    puts u2.to_yaml	
 			    u2.add_trees = "1"
+			    u2.roles.create name: :tree_owner
 			    u2.save
 			     puts "owner"
 			     puts u2.errors.full_messages
@@ -151,6 +152,7 @@ task :importTrees => :environment do
 		  			else
 		  				t.owner_id = user_id1
 		    		end
+		    		t.species = "Unknown"
 		    		if row[31+gap].present? && row[31+gap].to_s != "Other (specify below)"
 		    			t.species = row[31+gap].to_s.strip
 		    		elsif row[32+gap].present? 

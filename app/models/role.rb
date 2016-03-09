@@ -4,7 +4,7 @@ class Role < ActiveRecord::Base
 
   belongs_to :user
 
-  enum name: [:admin, :coordinator, :participant, :tree_registrant]
+  enum name: [:admin, :coordinator, :participant, :tree_registrant, :tree_owner]
   validates :name, uniqueness: { scope: :user_id }
 
   default_scope { order :name }

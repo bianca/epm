@@ -15,6 +15,7 @@
               <div style="width: 33%; float: left; clear: none">
           <% end %>
           <label style="clear: both; float: left">
+
           <%= f.radio_button :species, t.downcase %>
           <%= image_tag("fruits/#{t.downcase}32.png") %>
           <%= t %>
@@ -35,6 +36,27 @@
 
     <div class="field">
 
+      <%= f.label :ripen, "Ripening Date" %><br>
+      <%= f.date_field :ripen, value: @tree.ripen %>
+      <% content_for :js_ready do %>
+        $('#tree_ripen').datepicker({
+          dateFormat: 'yy-mm-dd',
+          nextText: '»',
+          prevText: '«',
+          showButtonPanel: true,
+          showOn: 'button',
+          closeText: 'Okay',
+          buttonText: '<%= @tree.ripen ? date(@tree.ripen) : 'Not set' %>',
+          onSelect: function(){
+            $('.ui-datepicker-trigger').text($.datepicker.formatDate('DD MM d, yy', $(this).datepicker('getDate')));
+          }
+        });
+      <% end %>
+    </div>  
+
+
+    <div class="field">
+
       <%= f.label :height, "Tree Height" %><br>
       <%= f.select(:height, options_for_select(Tree.height_labels, @tree.height), include_blank: true) %>
     </div>  
@@ -44,12 +66,12 @@
       <%= f.text_area :treatment %>
     </div>
 
-    <% if action_name == "edit" %>
+    <% if @tree.persisted? %>
       If this tree is not pickable anymore, let us know and tell us why:
 
       <div class="field">
         
-        <%= f.check_box :pickable, {}, "false", "true" %><%= f.label :pickable, "No, this tree is not pickable" %>
+        <%= f.check_box :pickable  %><%= f.label :pickable, "Yes, this tree is pickable" %>
       </div>
 
       <div class="field">
@@ -74,7 +96,11 @@
 
 
   <div class="actions">
-    <%= f.submit "Add Tree" %>
+    <% if @tree.new_record? %>
+      <%= f.submit "Add Tree" %>
+    <% else %>
+      <%= f.submit "Save Changes" %>
+    <% end %>
   </div>
 
 
@@ -94,22 +120,37 @@
           if (value == "propertyowner") {
             $("#propertyowner").show();
             $("#notpropertyowner").hide();
+            $("#friend").hide();
+            $("#tenant").hide();
             $("#permission_message").hide();
             $('input[name!="tree[relationship]"]').prop('disabled', false);
           } else if (value == "nopermission") {
             $("#permission_message").show();
+            $("#friend").hide();
+            $("#tenant").hide();
             $("#notpropertyowner").hide();
             $("#propertyowner").hide();
             $('input[name!="tree[relationship]"]').prop('disabled', true);
-          } else {
+          } else if (value == "friend") {
             $("#propertyowner").hide();
             $("#notpropertyowner").show();
+            $("#friend").show();
+            $("#tenant").hide();
+            $("#permission_message").hide();
+            $('input[name!="tree[relationship]"]').prop('disabled', false);
+          } else if (value == "tenant") {
+            $("#propertyowner").hide();
+            $("#notpropertyowner").show();
+            $("#friend").hide();
+            $("#tenant").show();
             $("#permission_message").hide();
             $('input[name!="tree[relationship]"]').prop('disabled', false);
           }
         }
         $("#propertyowner").hide();
         $("#notpropertyowner").hide();
+        $("#tenant").hide();
+        $("#friend").hide();
         $('[name="tree[relationship]"]').each(function(i, thing) {
           if (thing.checked == true) {
             toggle(thing.value)
@@ -139,6 +180,29 @@
       </p>
       <%= f.fields_for :owner, @tree.owner do |uf| %>
         <%= uf.hidden_field :id %>
+
+
+    <div id="tenant">
+
+        <fieldset>
+          <legend>Name <%= required %></legend>
+          <%= uf.text_field :fname, placeholder: 'First', value: "" %><br>
+          <%= uf.text_field :lname, placeholder: 'Last', value: "" %>
+        </fieldset>
+
+        <div class="field">
+          <%= uf.label :email %> <%= required %><br>
+          <%= uf.email_field :email, value: "" %>
+        </div>
+
+        <div class="field">
+          <%= uf.label :phone %>  <%= required %><br>
+          <%= uf.phone_field :phone, value: "" %>
+        </div>
+    </div>
+
+
+    <div id="friend">
         <fieldset>
           <legend>Name <%= required %></legend>
           <%= uf.text_field :fname, placeholder: 'First' %><br>
@@ -154,7 +218,7 @@
           <%= uf.label :phone %>  <%= required %><br>
           <%= uf.phone_field :phone %>
         </div>
-
+    </div>
         <div>
           <%= uf.label :home_ward, "City Ward", style: 'font-weight:normal' %>
           <%= uf.collection_select :home_ward, Ward.all, :id, :name, include_blank: true %>
@@ -191,6 +255,7 @@
 
     <% end %>
   </div>
+
 <%= end_cols %>
 
 <% end %>
