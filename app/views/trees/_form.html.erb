@@ -119,38 +119,57 @@
         var toggle = function (value) {
           if (value == "propertyowner") {
             $("#propertyowner").show();
-            $("#notpropertyowner").hide();
-            $("#friend").hide();
-            $("#tenant").hide();
-            $("#permission_message").hide();
+            $("#notpropertyowner, #permission_message").hide();
             $('input[name!="tree[relationship]"]').prop('disabled', false);
+            var owner = $("#notpropertyowner").data("owner")
+            $("#tree_owner_attributes_fname").val(owner.fname)
+            $("#tree_owner_attributes_lname").val(owner.lname)
+            $("#tree_owner_attributes_email").val(owner.email)
+            $("#tree_owner_attributes_phone").val(owner.phone)
+            $("#tree_owner_attributes_address").val(owner.address)
+            $("#tree_owner_attributes_propertynotes").val(owner.propertynotes)            
           } else if (value == "nopermission") {
             $("#permission_message").show();
-            $("#friend").hide();
-            $("#tenant").hide();
             $("#notpropertyowner").hide();
             $("#propertyowner").hide();
             $('input[name!="tree[relationship]"]').prop('disabled', true);
           } else if (value == "friend") {
             $("#propertyowner").hide();
             $("#notpropertyowner").show();
-            $("#friend").show();
-            $("#tenant").hide();
+            $("#tree_owner_attributes_fname").val("")
+            $("#tree_owner_attributes_lname").val("")
+            $("#tree_owner_attributes_email").val("")
+            $("#tree_owner_attributes_phone").val("")
+            $("#tree_owner_attributes_address").val("")
+            $("#tree_owner_attributes_propertynotes").val("")
+            $("tree_owner_attributes_ladder_yes").prop('checked', false); 
+            $("tree_owner_attributes_ladder_no").prop('checked', false); 
+            $("tree_owner_attributes_ladder_borrow").prop('checked', false); 
             $("#permission_message").hide();
             $('input[name!="tree[relationship]"]').prop('disabled', false);
           } else if (value == "tenant") {
-            $("#propertyowner").hide();
+            $("#propertyowner, #permission_message").hide();
             $("#notpropertyowner").show();
-            $("#friend").hide();
-            $("#tenant").show();
-            $("#permission_message").hide();
             $('input[name!="tree[relationship]"]').prop('disabled', false);
+
+            var owner = $("#notpropertyowner").data("owner")
+            $("#tree_owner_attributes_fname").val("")
+            $("#tree_owner_attributes_lname").val("")
+            $("#tree_owner_attributes_email").val("")
+            $("#tree_owner_attributes_phone").val("")
+            $("#tree_owner_attributes_address").val(owner.address)
+            $("#tree_owner_attributes_propertynotes").val(owner.propertynotes)
+            if (owner.ladder == "yes") {
+              $("tree_owner_attributes_ladder_yes").prop('checked', true);           
+            } else if (owner.ladder == "no") {
+              $("tree_owner_attributes_ladder_no").prop('checked', true);
+            } else if (owner.ladder == "borrow") {
+              $("tree_owner_attributes_ladder_borrow").prop('checked', true);
+            }
           }
         }
         $("#propertyowner").hide();
         $("#notpropertyowner").hide();
-        $("#tenant").hide();
-        $("#friend").hide();
         $('[name="tree[relationship]"]').each(function(i, thing) {
           if (thing.checked == true) {
             toggle(thing.value)
@@ -167,46 +186,22 @@
       If you don't already have permission from the property owner, please go get it first before adding their tree to our directory.
     </div>
     <div id="propertyowner">
-      <%= f.fields_for :owner, @tree.owner do |uf| %>
-        <%#= uf.hidden_field :id %>
         You, <%= @tree.owner.fname %> <%= @tree.owner.lname %>, are adding a tree found at your property, <%= @tree.owner.address %>.
-      <% end %>
 
     </div>
     <!-- if the user is not a property owner, just include a card with their info -->
-    <div id="notpropertyowner">
+    <div id="notpropertyowner" data-owner="<%=@tree.owner.to_json %>">
       <p style="font-weight: bold">
       Please fill out as much information as possible below about the property owner and their property. 
       </p>
       <%= f.fields_for :owner, @tree.owner do |uf| %>
-        <%= uf.hidden_field :id %>
+        <!--%= uf.hidden_field :id %-->
 
-
-    <div id="tenant">
-
-        <fieldset>
-          <legend>Name <%= required %></legend>
-          <%= uf.text_field :fname, placeholder: 'First', value: "" %><br>
-          <%= uf.text_field :lname, placeholder: 'Last', value: "" %>
-        </fieldset>
-
-        <div class="field">
-          <%= uf.label :email %> <%= required %><br>
-          <%= uf.email_field :email, value: "" %>
-        </div>
-
-        <div class="field">
-          <%= uf.label :phone %>  <%= required %><br>
-          <%= uf.phone_field :phone, value: "" %>
-        </div>
-    </div>
-
-
-    <div id="friend">
         <fieldset>
           <legend>Name <%= required %></legend>
           <%= uf.text_field :fname, placeholder: 'First' %><br>
           <%= uf.text_field :lname, placeholder: 'Last' %>
+
         </fieldset>
 
         <div class="field">
@@ -218,7 +213,7 @@
           <%= uf.label :phone %>  <%= required %><br>
           <%= uf.phone_field :phone %>
         </div>
-    </div>
+
         <div>
           <%= uf.label :home_ward, "City Ward", style: 'font-weight:normal' %>
           <%= uf.collection_select :home_ward, Ward.all, :id, :name, include_blank: true %>

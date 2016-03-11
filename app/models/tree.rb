@@ -9,7 +9,20 @@ class Tree < ActiveRecord::Base
   belongs_to :submitter, class_name: "User"
   has_many :event_trees
   has_many :events, :through => :event_trees
-  accepts_nested_attributes_for :owner
+
+  accepts_nested_attributes_for :owner, :reject_if => :legit_owner
+  accepts_nested_attributes_for :submitter, :reject_if => :legit_owner
+  #attr_accessible :lname, :owner_attributes
+  #validates :lname, presence: true
+
+
+  def legit_owner(attributes)
+    attributes[:fname].blank?
+    attributes[:lname].blank?
+    attributes[:phone].blank?
+    attributes[:email].blank?
+    attributes[:address].blank?
+  end
 
   acts_as_mappable through: :owner
 
