@@ -101,4 +101,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def properties
+    #format.csv do
+    #end
+    send_data User.property_csv(User.distinct.joins(:trees).where("(SELECT count(trees.id) from trees where trees.owner_id=users.id) <>0"))
+  end
+
 end

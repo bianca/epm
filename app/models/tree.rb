@@ -41,6 +41,21 @@ class Tree < ActiveRecord::Base
     :tenant => "tenant"
   }
 
+  def self.csv(trees)
+    CSV.generate force_quotes: true do |csv|
+      csv << ['id', 'species', 'sub-species','home ward', 'address', 'first name', 'last name', 'email', 'phone number', 'First Registered', "Submitter Name", "Submitter Email", "Submitter Phone"]
+      trees.each do |tree|
+        if tree.submitter.present?
+          csv << [tree.id, tree.species, tree.subspecies, tree.owner.home_ward, tree.owner.address, tree.owner.fname, tree.owner.lname, tree.owner.email, tree.owner.phone, tree.owner.created_at.to_date.to_s, tree.owner.fname+" "+tree.owner.lname, tree.owner.email, tree.owner.phone,]
+        else
+          csv << [tree.id, tree.species, tree.subspecies, tree.owner.home_ward, tree.owner.address, tree.owner.fname, tree.owner.lname, tree.owner.email, tree.owner.phone, tree.owner.created_at.to_date.to_s]
+        end
+      end
+    end
+  end
+
+
+
   def self.relationship_labels 
   {
     :propertyowner => "property owner",

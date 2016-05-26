@@ -21,6 +21,11 @@ module EventsHelper
     datetime.strftime '%A %B %e, %Y'
   end
 
+  def date_of_year(datetime)
+    # this method needs to be kept in synch with js-formatted date in events/_form.html.erb
+    datetime.strftime '%B %e'
+  end
+
   def time(datetime)
     datetime.strftime('%l:%M %p').strip
   end

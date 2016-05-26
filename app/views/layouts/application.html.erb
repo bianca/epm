@@ -68,6 +68,11 @@
               <%= link_to 'Agencies', agencies_path %>
             </li>
           <% end %>
+          <% if can? :stats, Event %>
+            <li<%= ' class="active"'.html_safe if controller_name == 'events' && action_name != 'stats' %>>
+              <%= link_to 'Stats', stats_events_path %>
+            </li>
+          <% end %>
         </ul>
         <%= link_to 'Log out', destroy_user_session_path, id: 'account' %>
       </nav>

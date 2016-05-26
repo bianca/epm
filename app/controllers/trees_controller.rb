@@ -18,6 +18,15 @@ class TreesController < ApplicationController
     else 
       @trees = Tree.all().page(@page).per(20)
     end
+
+    respond_to do |format|
+      format.csv do
+        send_data Tree.csv(Tree.distinct.joins(:owner))
+      end
+      format.html do
+
+      end
+    end
   end
 
   def mine

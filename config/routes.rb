@@ -10,6 +10,7 @@ Epm::Application.routes.draw do
   resources :users, only: [:index, :show, :edit, :update, :destroy] do
     resources :roles, only: [:create, :destroy], shallow: true
     get 'map', on: :collection
+    get 'properties', on: :collection
     patch 'deactivate', on: :member
     get 'invite'
   end
@@ -19,6 +20,7 @@ Epm::Application.routes.draw do
   resources :events do
     get 'calendar', on: :collection
     get 'dashboard', on: :collection
+    get 'stats', on: :collection
     member do
       get 'who'
       get 'cancel', to: 'events#ask_to_cancel'

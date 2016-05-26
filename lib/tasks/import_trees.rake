@@ -1,9 +1,13 @@
 task :importTrees => :environment do
+
+	tree_errors = []
+	user_errors = []
 	rows = CSV.read(Rails.root + "app/assets/data/formdata.csv")
 	#header = rows.first.map{|c| c.downcase }
     rows = rows[1..-1]
     rows.each do |row|
-
+    	user_id1 = nil 
+    	user_id2 = nil
     	if row[21].to_s.strip != ""
 
 		    address = row[21].to_s.strip + ", "
@@ -29,6 +33,9 @@ task :importTrees => :environment do
 		    u = User.new
 		    u.fname = row[7]
 		    u.lname = row[8]
+		    if u.lname.blank?
+		    	u.lname = "Unknown"
+		    end
 		    u.email = row[9]
 		    if u.email.blank?
 		    	u.email = (User.last.id + 1).to_s + "@example.com" if u.email.blank?	    	
@@ -61,7 +68,9 @@ task :importTrees => :environment do
 		    	u.save
 		    	 puts "submitter"
 		    	 puts u.errors.full_messages
-		    	 puts u.to_yaml
+		    		if u.errors.present?
+		    			user_errors.push(u)
+		    		end
 			    u2 = User.new
 			    puts row.length
 			    puts row[84]
@@ -69,6 +78,9 @@ task :importTrees => :environment do
 			    u2.updated_at = Time.zone.now
 			    u2.fname = row[15]
 			    u2.lname = row[16]
+			    if u2.lname.blank?
+		    		u2.lname = "Unknown"
+		    	end
 			    u2.email = row[19]
 			    u2.can_email = true
 			    u2.can_email = false if row[3].present?
@@ -97,14 +109,18 @@ task :importTrees => :environment do
 			    u2.propertynotes += "\n" + row[76] if row[76].present?
 			    u2.home_ward = row[27]
 			    u2.skip_confirmation!
+			    puts "owner before saving"
 			    puts u2.to_yaml	
 			    u2.add_trees = "1"
-			    u2.roles.create name: :tree_owner
 			    u2.save
-			     puts "owner"
-			     puts u2.errors.full_messages
-				 puts u2.to_yaml
-			    user_id2 = u2.id
+			    if u2.errors.present?
+		    		user_errors.push(u2)
+		    	end
+			    puts u2.errors.full_messages
+			    if u2.errors.blank?
+			    	u2.roles.create name: :tree_owner			    
+			   		user_id2 = u2.id
+			   	end
 			elsif row[15].present? && existing_user.present?
 			# the last user was a submitter, must use queried user as owner_id
 				user_id2 = existing_user.id
@@ -120,12 +136,13 @@ task :importTrees => :environment do
 			    u.ladder = ladder
 			    u.home_ward = row[27]
 			    u.skip_confirmation!
+			    puts "just new owner before save"
 			    puts u.to_yaml
 			    u.add_trees = "1"	
 				u.save
-				 puts "just new owner"
-				 puts u.errors.full_messages
-				 puts u.to_yaml
+	    		if u.errors.present?
+	    			user_errors.push(u)
+	    		end
 				user_id1 = u.id    
 		    end
 		    extranotes = ""
@@ -146,6 +163,9 @@ task :importTrees => :environment do
 	    				t.relationship = :friend
 	    			end
 		    		t.treatment = row[73].to_s if row[73].present?
+		    		puts "user_id2"
+		    		puts user_id2.present?.to_yaml
+		    		puts user_id2.to_yaml
 		    		if user_id2.present?
 		    			t.owner_id = user_id2
 		    			t.submitter_id = user_id1
@@ -186,9 +206,9 @@ task :importTrees => :environment do
 		    			t.additional += extranotes if extranotes.present?
 		    		end
 		    		t.save
-		    		puts t.to_yaml
-		    		puts t.errors.full_messages
-
+		    		if t.errors.present?
+		    			tree_errors.push(t)
+		    		end
 		    	end
 
 		    end
@@ -196,6 +216,18 @@ task :importTrees => :environment do
 		end
 
     end
+	CSV.open(Rails.root + "app/assets/data/error_users.csv","ab") do |csv|
+     user_errors.each do |user|
+          csv << [user.errors.full_messages.to_yaml, user.home_ward, user.address, user.fname, user.lname, user.email, user.phone]
 
+      end
+    end
+	CSV.open(Rails.root + "app/assets/data/error.csv","ab") do |csv|
+      csv << ['id', 'species', 'sub-species','home ward', 'address', 'first name', 'last name', 'email', 'phone number', 'First Registered', "Submitter Name", "Submitter Email", "Submitter Phone"]
+      tree_errors.each do |tree|
+          csv << [tree.errors.full_messages.to_yaml, tree.species, tree.subspecies, tree.owner.home_ward, tree.owner.address, tree.owner.fname, tree.owner.lname, tree.owner.email, tree.owner.phone, tree.owner.created_at.to_date.to_s, tree.submitter.fname+" "+tree.submitter.lname, tree.submitter.email, tree.submitter.phone]
+
+      end
+    end
 
 end

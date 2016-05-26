@@ -79,6 +79,37 @@
 
   end
 
+  def stats
+    formulas = {
+      "=0" => "none",
+      "=1" => "1",
+      "=2" => "2-3",
+      "=3" => "2-3",
+      "=4" => "4-5",
+      "=5" => "4-5",
+      ">5" => "6+"
+    }
+
+    @attendance = {}
+    oldest_year = Event.oldest_year.to_i 
+    (oldest_year..DateTime.now.year).each do |year|
+      unless @attendance.has_key? year
+        @attendance[year] = {}
+      end
+      (formulas).each do |formula, category|
+        unless @attendance[year].has_key? category
+          @attendance[year][category] = 0
+        end
+        @attendance[year][category] = @attendance[year][category] + User.participation(year, formula).length
+      end
+    end
+    puts EventUser.noshow.to_yaml
+    EventUser.noshow.each do |record|
+      puts record.to_yaml
+      @attendance[record.year.to_i]["no show"] = record.count
+    end
+  end
+
   def calendar
     @events = Event.not_cancelled.in_month params['year'], params['month']
   end

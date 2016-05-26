@@ -16,7 +16,7 @@
           <% end %>
           <label style="clear: both; float: left">
 
-          <%= f.radio_button :species, t.downcase %>
+          <%= f.radio_button :species, t %>
           <%= image_tag("fruits/#{t.downcase}32.png") %>
           <%= t %>
           </label>
@@ -107,7 +107,11 @@
 <%= next_col %>
 
    <fieldset>
-      <legend>Which best describes you?</legend>
+      <% if @tree.new_record? %>
+        <legend>Which best describes you?</legend>
+      <% else %>
+        <legend>Ownership:</legend>
+      <% end %>
       <label style="margin:0 0.7em"><%= f.radio_button :relationship, :propertyowner %>Property Owner</label>
       <label style="margin:0 0.7em"><%= f.radio_button :relationship, :tenant %>Tenant</label>
       <label style="margin:0 0.7em"><%= f.radio_button :relationship, :friend %>Friend</label>
@@ -186,7 +190,17 @@
       If you don't already have permission from the property owner, please go get it first before adding their tree to our directory.
     </div>
     <div id="propertyowner">
-        You, <%= @tree.owner.fname %> <%= @tree.owner.lname %>, are adding a tree found at your property, <%= @tree.owner.address %>.
+
+        You, <%= @tree.owner.fname %> <%= @tree.owner.lname %>, 
+        <% if @tree.new_record? %>
+          are adding a 
+        <% else %>
+          added this
+        <% end %>
+
+
+
+        tree found at your property, <%= @tree.owner.address %>.
 
     </div>
     <!-- if the user is not a property owner, just include a card with their info -->

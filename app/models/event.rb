@@ -134,6 +134,31 @@ class Event < ActiveRecord::Base
   validates :lng, numericality: {greater_than_or_equal_to: -180, less_than_or_equal_to: 180}, allow_nil: true
 
   default_scope { order :start }
+  #scope :noshows_stats, -> { where('event_users.status', EventUser.statuses['no_show']) }
+  # scope :noshows_stats, -> { 
+
+  #   where("id IN (SELECT event_id FROM event_users WHERE status=?)", EventUser.statuses['no_show'])
+  #     .group("extract(year from start)").count
+  #     #.where.not(coordinator_id: user.id)
+  #     #.distinct
+  # }
+
+
+  # count users that have not gone to an event 
+  #count distinct users where user_events:attending or attended is 0 and user_events.year = a year
+  #2015 23
+  #2016 23
+
+  # 
+
+  #select count(distinct(user.id)) and from (
+  #    select count(distinct(user.id)) from users left join event_users group_by(YEAR(event_users.start))
+
+  #  ) where count(event_users) = 0 
+
+  scope :nogo_stats, -> { 
+    "select count(distinct(users.id)) from users left join event_users group_by(YEAR(event_users.start))"
+  }
   scope :with_date, -> { where 'start IS NOT NULL AND finish IS NOT NULL' }
   scope :past, -> { where('finish < ?', Time.zone.now).reorder('finish DESC') }
   scope :not_past, -> { where 'start IS NULL OR finish > ?', Time.zone.now }
@@ -142,6 +167,7 @@ class Event < ActiveRecord::Base
       .where.not(coordinator_id: user.id)
       .distinct
   }
+  scope :oldest_year, -> { minimum('extract (year from events.start)') } 
   scope :coordinatorless, -> { where coordinator: nil }
   scope :dateless, -> { where start: nil }
   #scope :byStatus -> (listofstatuses) { where(status: listofstatuses) }

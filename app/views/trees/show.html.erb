@@ -47,7 +47,7 @@
 	<% end %>  	
 	<% if @tree.ripen.present? %>
 		<p>
-  			<b>This tree ripens close to: </b> <%=date(@tree.ripen) %>
+  			<b>This tree ripens close to: </b> <%=date_of_year(@tree.ripen) %> 
   		</p>
 	<% end %>
 
@@ -85,7 +85,7 @@
 			<b>Mailing Address: </b> <%= contact.address %>
 		</p>
 		<p>
-			<b>Contact Info: </b> <%= contact.contactnotes || "None" %>
+			<b>Additional Contact Information: </b> <%= contact.contactnotes || "None" %>
 		</p>
 
 	<%= next_col %>
@@ -146,21 +146,21 @@
   	<b>Tree Address: </b><%=@tree.owner.address %>
   </p>
   <p>
-  	<b>Ward: </b><%=@tree.owner.ward %>
+  	<b>Ward: </b><%=@tree.owner.home_ward %>
   </p>
 
- <h1>Event Instructions</h1>
+
 	<% if @tree.keep.present? %>
 		<p>Keep <b><%= Tree.keep_result_labels.key(@tree.keep.to_sym) %></b> of the fruit for the property owner.</p>
 	<% end %>
 
-	<b>Tree Access Notes: </b>
+	<b>Property Notes: </b>
 	<p><%= @tree.owner.propertynotes %></p>
 
 	<% @tree.owner.ladder = User.ladders[:yes] %>
 
 	<% if @tree.owner.ladder.present? %>
-	<p>Ladder: <b>The property owner <%=User.ladder_show_labels.key(@tree.owner.ladder.to_sym) %></b></p>
+	<p><b>Ladder:</b> The property owner <%=User.ladder_show_labels.key(@tree.owner.ladder.to_sym) %></p>
 	<% end %>
 
 

@@ -23,8 +23,8 @@ class Ability
       if user.has_role? :admin
         can :manage, [Event, Role, EquipmentSet, Agency, Tree, :setting]
         cannot [:claim, :attend], Event
-        can [:approve, :hide_specific_location], Event
-        can [:index, :map, :show, :read_contact, :read_attendance, :update, :destroy, :invite], User
+        can [:approve, :hide_specific_location, :stats], Event
+        can [:index, :map, :properties, :show, :read_contact, :read_attendance, :update, :destroy, :invite], User
       end
 
       if user.has_role? :coordinator

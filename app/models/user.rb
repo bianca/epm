@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
 
   validate :hasPurpose
 
+  has_many :trees, foreign_key: 'owner_id'
+
   def hasPurpose
      if add_trees == "0" && participate_in_picks == "0"
       errors.add(:base, "You must choose to either 'participate in picks' or 'add trees'")
@@ -45,6 +47,21 @@ class User < ActiveRecord::Base
   def picks?
     participate_in_picks == "1"
   end
+
+
+  def self.property_csv(users)
+    CSV.generate force_quotes: true do |csv|
+      csv << ['id', 'home ward', 'address', 'first name', 'last name', 'email', 'phone number', 'First Registered', "# of Trees", "Trees"]
+      users.each do |user|
+        trees = []
+        user.trees.each do |tree|
+          trees << tree.species
+        end
+        csv << [user.id, user.home_ward, user.address, user.fname, user.lname, user.email, user.phone, user.created_at.to_date.to_s, user.trees.length, trees.join(', ')]
+      end
+    end
+  end
+
 
   def self.csv(users)
     CSV.generate force_quotes: true do |csv|
@@ -97,6 +114,17 @@ class User < ActiveRecord::Base
       .group('users.id')
       .reorder('MAX(event_users.updated_at) DESC, COUNT(users.id)')
   }
+
+  scope :participation, ->(year, formula) {
+    select("users.id, (select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract (year from events.start) = #{year}) as thecount").group("users.id").having("(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract (year from events.start) = #{year})#{formula}")
+  }
+
+##     select('(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and extract (year from events.start) = ?) as thecount', year).having('(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and extract (year from events.start) = ?)?', year,formula)
+ 
+
+
+
+
   def no_show_count
     self.event_users.where(status: EventUser.statuses[:no_show]).count
   end

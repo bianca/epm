@@ -30,7 +30,9 @@ class AgenciesController < ApplicationController
   end
 
   def destroy
+    flash[:notice] = "#{@agency.title} deleted."
     @agency.destroy
+    redirect_to @agency
   end
 
   private

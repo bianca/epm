@@ -26,6 +26,14 @@ class EventUser < ActiveRecord::Base
   end
 
 
+  scope :noshow, -> {
+    where(status: statuses[:no_show])
+    .joins("LEFT JOIN events ON event_users.event_id = events.id")
+    .select("extract (year from events.start) AS year, count(event_users.id) as count")
+    .group(:year)
+  }
+
+
   def attend
     #return false if event.past?
     # todo: does not handle :requested status
