@@ -29,7 +29,7 @@ class EventUser < ActiveRecord::Base
   scope :noshow, -> {
     where(status: statuses[:no_show])
     .joins("LEFT JOIN events ON event_users.event_id = events.id")
-    .select("extract (year from events.start) AS year, count(event_users.id) as count")
+    .select("extract(YEAR from events.start) AS year, count(event_users.id) as count")
     .group(:year)
   }
 
