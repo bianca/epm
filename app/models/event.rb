@@ -172,7 +172,7 @@ class Event < ActiveRecord::Base
       .where.not(coordinator_id: user.id)
       .distinct
   }
-  scope :oldest_year, -> { minimum('extract (year from events.start)') } 
+  scope :oldest_year, -> { minimum('extract(YEAR from events.start)') } 
   scope :coordinatorless, -> { where coordinator: nil }
   scope :dateless, -> { where start: nil }
   #scope :byStatus -> (listofstatuses) { where(status: listofstatuses) }
