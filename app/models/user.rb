@@ -116,7 +116,7 @@ class User < ActiveRecord::Base
   }
 
   scope :participation, ->(year, formula) {
-    select("users.id, (select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract (year from events.start) = #{year}) as thecount").group("users.id").having("(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract (year from events.start) = #{year})#{formula}")
+    select("users.id, (select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract(YEAR from events.start) = #{year}) as thecount").group("users.id").having("(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract(YEAR from events.start) = #{year})#{formula}")
   }
 
 ##     select('(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and extract (year from events.start) = ?) as thecount', year).having('(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and extract (year from events.start) = ?)?', year,formula)
