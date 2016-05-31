@@ -155,10 +155,15 @@ class Event < ActiveRecord::Base
   #    select count(distinct(user.id)) from users left join event_users group_by(YEAR(event_users.start))
 
   #  ) where count(event_users) = 0 
-
-  scope :nogo_stats, -> { 
-    "select count(distinct(users.id)) from users left join event_users group_by(YEAR(event_users.start))"
-  }
+  if Rails.env.production?
+    scope :nogo_stats, -> { 
+      "select count(distinct(users.id)) from users left join event_users group_by(EXTRACT(YEAR from event_users.start))"
+    }
+  else 
+    scope :nogo_stats, -> { 
+      "select count(distinct(users.id)) from users left join event_users group_by(YEAR(event_users.start))"
+    }
+  end
   scope :with_date, -> { where 'start IS NOT NULL AND finish IS NOT NULL' }
   scope :past, -> { where('finish < ?', Time.zone.now).reorder('finish DESC') }
   scope :not_past, -> { where 'start IS NULL OR finish > ?', Time.zone.now }

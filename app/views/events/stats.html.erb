@@ -1,0 +1,51 @@
+<style>
+	table.stats {
+		border: solid 3px #333;
+		background: #eee;
+	}
+
+	table.stats td {
+		padding: 20px;
+		margin: 0px;
+		border: solid 0.5px #999;
+		text-align: center;
+	}
+	table.stats tr.header td, table.stats td.header {
+		background: #00f;
+		color: #fff;
+	
+	}
+
+</style>
+
+<h1>Attendance Report</h1>
+<table class="stats" cellspacing="0">
+	<tr class="header">
+		<td></td>
+		<% @attendance[DateTime.now.year].each do |category, data| %>
+				<td><%=category %></td>
+		<% end %>
+	</tr>
+<% @attendance.each do |year, data| %>
+	<tr>
+		<td class="header"><%=year %></td>
+
+		<%data.each do |category, datapoint| %>
+			<td><%=datapoint %></td>
+		<% end %>
+	</tr>
+<% end %>
+</table>
+
+<h1>Exports</h1>
+<ul>
+	<li>
+		<a href="/users/properties.csv"> Properties</a>
+	</li>
+	<li>
+		<a href="/trees.csv"> Trees</a>
+	</li>
+</ul>
+
+
+</table>
