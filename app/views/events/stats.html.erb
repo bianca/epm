@@ -22,7 +22,7 @@
 <table class="stats" cellspacing="0">
 	<tr class="header">
 		<td></td>
-		<% @attendance.first.each do |category, data| %>
+		<% @attendance[@attendance.keys.min].each do |category, data| %>
 				<td><%=category %></td>
 		<% end %>
 	</tr>
