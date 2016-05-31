@@ -103,9 +103,7 @@
         @attendance[year][category] = @attendance[year][category] + User.participation(year, formula).length
       end
     end
-    puts EventUser.noshow.to_yaml
     EventUser.noshow.each do |record|
-      puts record.to_yaml
       @attendance[record.year.to_i]["no show"] = record.count
     end
   end

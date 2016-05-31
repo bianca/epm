@@ -22,7 +22,7 @@
 <table class="stats" cellspacing="0">
 	<tr class="header">
 		<td></td>
-		<% @attendance[DateTime.now.year].each do |category, data| %>
+		<% @attendance.first.each do |category, data| %>
 				<td><%=category %></td>
 		<% end %>
 	</tr>
