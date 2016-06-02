@@ -118,7 +118,7 @@ class User < ActiveRecord::Base
   }
 
   scope :participation, ->(year, formula) {
-    select("users.id, (select count(event_users.id) as eucount from event_users inner join roles on roles.user_id=users.id left join events on events.id = event_users.event_id where roles.name = #{Role.names[:participant]} and event_users.status=8 and event_users.user_id=users.id and extract(YEAR from events.start) = #{year}) as thecount").joins(:roles).where("roles.name=2").group("users.id").having("(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract(YEAR from events.start) = #{year})#{formula}")
+    select("users.id, (select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract(YEAR from events.start) = #{year}) as thecount").joins(:roles).where("roles.name=2").group("users.id").having("(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and event_users.user_id=users.id and extract(YEAR from events.start) = #{year})#{formula}")
   }
 
 ##     select('(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and extract (year from events.start) = ?) as thecount', year).having('(select count(event_users.id) as eucount from event_users left join events on events.id = event_users.event_id where event_users.status=8 and extract (year from events.start) = ?)?', year,formula)
