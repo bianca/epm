@@ -100,7 +100,11 @@
         unless @attendance[year].has_key? category
           @attendance[year][category] = 0
         end
-        @attendance[year][category] = @attendance[year][category] + User.participation(year, formula).length
+        p = User.participation(year, formula)
+        puts p.to_yaml
+        if p.present?
+          @attendance[year][category] = @attendance[year][category] + p.length
+        end
       end
     end
     EventUser.noshow.each do |record|

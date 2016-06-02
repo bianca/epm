@@ -151,7 +151,11 @@ class TreesController < ApplicationController
   # DELETE /trees/1
   def destroy
     @tree.destroy
-    redirect_to trees_url, notice: 'Tree was successfully destroyed.'
+    if can? :index, Tree
+      redirect_to trees_url, notice: 'Tree was successfully destroyed.'
+    else 
+      redirect_to mine_trees_url, notice: 'Tree was successfully destroyed.'
+    end
   end
 
   private

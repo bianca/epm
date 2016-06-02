@@ -31,7 +31,9 @@ class EquipmentSetsController < ApplicationController
   end
 
   def destroy
+    flash[:notice] = "#{@equipment_set.title} deleted."
     @equipment_set.destroy
+    redirect_to @equipment_set
   end
 
   private 
