@@ -7,10 +7,7 @@ function make_map(map_div, hide_self) {
     me = L.latLng($('body').data('lat'), $('body').data('lng'));
   }
   var map = new L.Map(map_div, { center: me, zoom: 10, minZoom: 3, maxZoom: 18,
-    layers: [new L.TileLayer('http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
-      attribution: 'Data &copy; <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors; Tiles by <a href="http://www.mapquest.com/">MapQuest</a>',
-      subdomains: ['otile1','otile2','otile3','otile4']
-      })]
+      layers: MQ.mapLayer()
     });
   if (!hide_self) {
     L.marker(me, {icon: L.divIcon({className: 'me', html: '<div class="inner"></div>', iconSize: L.point(15, 15)})}).addTo(map);

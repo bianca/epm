@@ -26,7 +26,7 @@
 
     $('<img/>')[0].src = '<%= image_url('loading.gif') %>'; <%# preload image %>
   <% end %>
-
+  <script src="https://open.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=cYOondyn4ktJAf7frbiVD5jkdGNASuf0"></script>
   <fieldset id="coords">
     <%= f.label :lat, 'Latitude' %> <%= f.number_field :lat, size: 10, :step => 'any' %><br>
     <%= f.label :lng, 'Longitude' %> <%= f.number_field :lng, size: 10, :step => 'any' %>
