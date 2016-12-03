@@ -44,7 +44,32 @@
     <%= attend_str %>
     <% if buttons.any? %>
       <% buttons.each do |type, label| %>
-        <%= button_to label, send("#{type}_event_path", @event), method: :patch %>
+
+        <% if type == :attend %>
+        <div id="warning" style="width: 500px; padding: 20px">
+          Please only sign up if you plan to attend! If you reach 2 no-shows on your account it will be deactivated for the remainder of the season. 
+          <br /><br />
+          <input type="checkbox" name="i_understand" id="i_understand" />I understand and promise to attend or give NFFTT 24 hrs notice if I can't come.
+        </div>
+          <% content_for :js_ready do %>
+            $('#warning').hide();
+            $('#attend').click(function (event) {
+              event.preventDefault();
+              console.log($('#i_understand').is(':checked'));
+              if ($('#warning').is("visible") == false) {
+                $('#warning').show();
+              } 
+              if ($('#i_understand').is(':checked') == true) {
+
+                $("#attend").parent().parent().submit();
+              }
+            });
+          <% end %>
+         <% end %>
+
+        <%= button_to label, send("#{type}_event_path", @event), {method: :patch, id: type} %>
+
+
       <% end %>
       <% if buttons[:attend] && @event.participants_needed > 0 %>
         <span style="white-space:nowrap">&ndash; <%= pluralize @event.participants_needed, Configurable.participant %> still needed.</span>
