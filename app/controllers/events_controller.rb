@@ -42,7 +42,7 @@
       max = 10 # used for sections which do not need to show all
       if current_user.has_role? :admin
         @sections << { q: Event.awaiting_approval, name: 'Awaiting Approval' }
-      end
+      end 
       if current_user.has_role? :participant
         @sections << { q: current_user.open_invites, name: "Recommended #{Configurable.event.pluralize.titlecase}", id: 'invited' }
       end
@@ -60,7 +60,7 @@
       if current_user.has_role? :admin
         @sections << { q: Event.where.not(coordinator_id: nil).where('start IS NULL OR lat IS NULL').not_past.not_cancelled, name: "#{Configurable.event.pluralize.titlecase} Missing a Date or Location", id: 'missing_info' }
       end
-      if current_user.has_any_role? :admin, :participant
+      if current_user.has_any_role? :admin
         q = Event.accepting_participants
         q = q.participatable_by(current_user) unless current_user.has_role? :admin
         @sections << { q: q, name: "#{Configurable.event.pluralize.titlecase} Accepting More #{Configurable.participant.pluralize.titlecase}", id: 'not_full' }

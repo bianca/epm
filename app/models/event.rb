@@ -405,8 +405,7 @@ class Event < ActiveRecord::Base
     n = 0
     priority_gap = 2
     User.invitable_to(self).shuffle.each do |participant|
-      eu = event_users.create user: participant, status: :invited
-      if eu.valid?
+      
         if self.start > 36.hours.from_now 
           send_by = Time.zone.now + (priority_gap * participant.priority).hours
         else 
@@ -414,7 +413,6 @@ class Event < ActiveRecord::Base
         end
         Invitation.create event: self, user: participant, send_by: send_by
         n += 1
-      end
     end
     n
   end

@@ -58,6 +58,7 @@ class EventMailer < ActionMailer::Base
   def invite(event, user)
     @event = event
     @user = user
+    eu = @event.event_users.create user: user, status: :invited
     mail to: to(user), subject: "#{event.display_name(@user)} at #{@event.start.strftime('%a %b %e %l:%M %p')}"
   end
 
