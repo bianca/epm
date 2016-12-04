@@ -17,7 +17,8 @@ class EventUser < ActiveRecord::Base
     :withdrawn,     # 6 participant had requested or been waitlisted, but then withdrew their request
     :cancelled,     # 7 participant had been 'attending' but changed their rsvp to 'no'
     :attended,      # 8 participant had intended to attend, and did so
-    :no_show        # 9 participant had intended to attend, but never showed up
+    :no_show,        # 9 participant had intended to attend, but never showed up
+    :dropout        # 10 participant was intending to attend, but dropped out within 24 hours
   ]
 
   validates :status, presence: true
@@ -51,6 +52,8 @@ class EventUser < ActiveRecord::Base
     was_attending = attending?
     if invited?
       self.status = action_by_self ? :not_attending : :denied
+    elsif attending? || (event.start-Time.zone.now)/3600 < 24
+      self.status = action_by_self ? :dropout : :denied      
     elsif attending? || no_show?
       self.status = action_by_self ? :cancelled : :denied
     elsif waitlisted? || requested?
