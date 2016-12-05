@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
   end
 
 
+
   enum ladder: {
     :yes => 1,
     :borrow => 2,
@@ -130,6 +131,13 @@ class User < ActiveRecord::Base
   def no_show_count
     self.event_users.where(status: EventUser.statuses[:no_show]).count
   end
+
+  def should_deactivate
+    if self.no_show_count >= 3
+      self.roles.where(name: Role.names[:participant]).destroy_all
+    end
+  end
+
 
   has_many :event_users, dependent: :destroy
   has_many :coordinating_events, -> { where.not(status: Event.statuses[:cancelled]) }, class_name: 'Event', foreign_key: 'coordinator_id'

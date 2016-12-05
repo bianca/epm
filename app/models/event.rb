@@ -423,6 +423,9 @@ class Event < ActiveRecord::Base
       eu.status = attended_eu_ids.include?(eu.id) ? :attended : :no_show
       user_attendance_changed = eu.changed?
       eu.save
+      if eu.no_show?
+        eu.user.should_deactivate
+      end
       eu.user.update num_participated_events: eu.user.participated_events.count if user_attendance_changed # update cached # of attended events
     end
   end
