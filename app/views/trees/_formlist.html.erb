@@ -15,16 +15,22 @@
           <%= check_box_tag  "event[tree_ids][]", tree.id %>     
         </td>
         <td>
+        <a href="<%=tree_path(tree) %>">
           <% if tree.species.present? %>
             <% if Tree.types.include?(tree.species.capitalize.to_s) %>
               <%= image_tag("fruits/#{tree.species.downcase}16.png") %>
             <% end %>
           <% end %>
+        </a>
         </td>
         <td>
+        <a href="<%=tree_path(tree) %>">
           <%= tree.species %>
+          </a>
         </td>
-        <td><%= (tree.owner.address.split(/[\n,]+/)[0]).to_s + "..." %></td>
+        <td>
+        <a href="<%=tree_path(tree) %>"><%= (tree.owner.address.split(/[\n,]+/)[0]).to_s + "..." %>
+        </a></td>
       </tr>
     <% end %>
   </tbody>

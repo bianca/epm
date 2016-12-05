@@ -85,7 +85,7 @@
 
   <%= next_col %>
 
-  <% if false %>
+  <% if @tree %>
     <b><%= @tree.owner.fname %></b> is the primary contact for this tree and is a <b><%= @tree.relationship %></b> in relation to the property. 
   <% else %>
     <% if @event.can_edit_attribute? :address, current_user %>
@@ -105,7 +105,7 @@
     <% end %>
   <% end %>
 
-  <% if false # @tree %>
+  <% if @tree %>
 
     <% if Tree.types.include?(@tree.species.capitalize.to_s) %>
     <%= image_tag("fruits/#{@tree.species.downcase}32.png") %>
@@ -124,7 +124,7 @@
 
   <% end %>
 
-<% if false #@event.can_edit_attribute? :trees, current_user %>
+<% if @event.can_edit_attribute? :trees, current_user %>
 <h1>Trees already added to this pick</h1>  
 <div id="selectedTrees" style="width: 100%">
 <table>
@@ -152,16 +152,24 @@
                   <% end %>          
               </td> 
               <td>
+                <a href="<%=tree_path(et.tree) %>">
                 <% if et.tree.species.present? %>
                   <% if Tree.types.include?(et.tree.species.capitalize.to_s) %>
                     <%= image_tag("fruits/#{et.tree.species.downcase}32.png") %>
                   <% end %>
                 <% end %>
+                </a>
               </td>
               <td>
+                <a href="<%=tree_path(et.tree) %>">
                 <%= et.tree.species %>
+                </a>
               </td>
-              <td><%= et.tree.owner.address %></td>
+              <td>
+                <a href="<%=tree_path(et.tree) %>">
+                <%= et.tree.owner.address %>
+                </a>
+              </td>
  
             
 
