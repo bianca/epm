@@ -18,7 +18,8 @@ class EventUser < ActiveRecord::Base
     :cancelled,     # 7 participant had been 'attending' but changed their rsvp to 'no'
     :attended,      # 8 participant had intended to attend, and did so
     :no_show,        # 9 participant had intended to attend, but never showed up
-    :dropout        # 10 participant was intending to attend, but dropped out within 24 hours
+    :dropout,        # 10 participant was intending to attend, but dropped out within 24 hours
+    :autonoshow        # 11 participant was automatically signed up from waitlist in the last 24 hours, but was a noshow
   ]
 
   validates :status, presence: true

@@ -419,8 +419,16 @@ class Event < ActiveRecord::Base
 
   def take_attendance(attended_eu_ids) # eu_ids which exist but are not passed in are no shows
     eus = event_users.where(status: EventUser.statuses_array(:attending, :attended, :no_show)).includes(:user)
+     
     eus.each do |eu|
-      eu.status = attended_eu_ids.include?(eu.id) ? :attended : :no_show
+      puts (self.start - eu.updated_at)/3600
+      if attended_eu_ids.include?(eu.id) 
+        eu.status = :attended
+      elsif (self.start - eu.updated_at)/3600 <24 
+        eu.status = :autonoshow
+      else   
+        eu.status = :no_show
+      end
       user_attendance_changed = eu.changed?
       eu.save
       if eu.no_show?
