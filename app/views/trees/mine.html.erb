@@ -7,8 +7,79 @@
 	<h1>Trees I Submitted</h1>
 	<%= render 'mylist', trees: @issubmitter %> 
 <% end %>
-
+<% if @issubmitter.any? || @isowner.any? %>
+ Any trees to still add?
+<% end %>
 <% if !@issubmitter.any? && !@isowner.any? %>
  You have not yet added a tree to the tree directory. Why not add one now?
+<% end %>
   <%= link_to "Add a Tree", new_tree_path(), {class: "button"} %>
+
+<br />
+<% if @isowner.any? || @issubmitter.any? %>
+
+	<% if @isowner.any? %>
+		<% isowner_upcoming = false %>
+		<h1>Upcoming Picks for Trees I Own</h1>
+		<% @isowner.each do |tree| %>
+			<% tree.events.each do |event| %>
+				<% isowner_upcoming = true %>
+				<% if event.start > DateTime.now %>
+					<%= render 'events/event', event: event %>
+				<% end %>
+			<% end %>
+		<% end %>
+		<% if isowner_upcoming == false %>
+			None yet...
+		<% end %>
+	<% end %>
+
+	<% if @issubmitter.any? %>
+		<% issubmitter_upcoming = false %>
+		<h1>Upcoming Picks for Trees I Submitted</h1>
+		<% @issubmitter.each do |tree| %>
+			<% tree.events.each do |event| %>
+				<% issubmitter_upcoming = true %>
+				<% if event.start > DateTime.now %>
+					<%= render 'events/event', event: event %>
+				<% end %>
+			<% end %>
+		<% end %>
+		<% if issubmitter_upcoming == false %>
+			None yet...
+		<% end %>
+	<% end %>
+
+	<% if @isowner.any? %>
+		<% isowner_previous = false %>
+		<h1>Previous Picks for Trees I Own</h1>
+		<% @isowner.each do |tree| %>
+			<% tree.events.each do |event| %>
+				<% isowner_previous = true %>
+				<% if event.start < DateTime.now %>
+					<%= render 'events/event', event: event %>
+				<% end %>
+			<% end %>
+		<% end %>
+		<% if isowner_previous == false %>
+			None yet...
+		<% end %>
+	<% end %>
+
+	<% if @issubmitter.any? %>
+		<% issubmitter_previous = false %>
+		<h1>Previous Picks for Trees I Submitted</h1>
+		<% @issubmitter.each do |tree| %>
+			<% tree.events.each do |event| %>
+				<% issubmitter_previous = true %>
+				<% if event.start < DateTime.now %>
+					<%= render 'events/event', event: event %>
+				<% end %>
+			<% end %>
+		<% end %>
+		<% if issubmitter_previous == false %>
+			None yet...
+		<% end %>
+	<% end %>
+
 <% end %>

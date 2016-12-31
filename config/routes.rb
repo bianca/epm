@@ -43,6 +43,7 @@ Epm::Application.routes.draw do
     get 'copy', on: :member
     get 'copy_location', on: :member
     get 'mine', on: :collection
+    get 'dashboard', on: :collection
     get 'closest', on: :collection
   end   
 

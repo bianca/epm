@@ -13,12 +13,18 @@ class ApplicationController < ActionController::Base
 
   check_authorization unless: :devise_controller?
   rescue_from CanCan::AccessDenied do |exception|
+
    if current_user
-     redirect_to root_url, alert: "Sorry, you don't have permission to do that."
+       if current_user.has_role?(:tree_registrant) || current_user.has_role?(:tree_owner)
+        redirect_to mine_trees_url
+        else
+          redirect_to root_url, alert: "Sorry, you don't have permission to do that."
+        end
    else
      redirect_to new_user_session_url
    end
   end
+
 
   protected
 
