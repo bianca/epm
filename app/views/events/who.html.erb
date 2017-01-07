@@ -21,7 +21,7 @@
   <%= link_to('Edit Attendance', take_attendance: true) if @can_take_attendance && !@taking_attendance %>
 <% end %>
 
-
+<%= start_cols %>
 <% if @taking_attendance %>
   <%= form_for @event, url: take_attendance_event_path(@event), method: :patch do |f| %>
     <fieldset class="users">
@@ -34,6 +34,48 @@
         </label>
       <% end %>
     </fieldset>
+    <fieldset class="details">
+      <legend>Post-Pick Details</legend>
+      <%= f.label :fun, "Fun Factor" %>
+      <%= f.select(:fun, options_for_select(Event.fun_labels, @event.fun), include_blank: true) %>
+      <br />
+      <%= f.label :lbs_to_agency, "Pounds of fruit delivered to agency" %>
+      <%= f.text_field :lbs_to_agency %>
+      <br />
+      <%= f.label :first_aid, "Any first aid issues?" %><br />
+      <%= f.text_area :first_aid %>
+      <br />
+     <% if Agency.any? %>
+      <fieldset id="agency">
+        <%= f.label :agency_id, "Which agency recieved the fruit?" %>
+        <%= f.collection_select :agency_id, Agency.all, :id, :title, include_blank: true %>
+      </fieldset>
+    <% end %>     
+
+    </fieldset>
+
+<%= next_col %>
+    <fieldset class="trees">
+      <% @event.event_trees.each do |event_tree| %>
+        <fieldset id="<%=event_tree.tree.id %>" style="border: 2px solid #999; padding: 10px; margin: 10px">
+        <h3> Info for <%=event_tree.tree.species %> <%if event_tree.tree.subspecies.present? %>(<%=event_tree.tree.subspecies %>)<% end %> Tree</h3>
+        <%= f.fields_for "event_tree[]", event_tree do |et| %>
+          <%#= et.hidden #{event_tree.tree.id} %> 
+          <%= et.label :lbs_picked, "Pounds picked" %>
+          <%= et.text_field :lbs_picked %>
+          <br />
+          <%= et.label :quality, "Quality" %>
+          <%= et.hidden_field :quality %>
+          <%= et.select(:quality,  options_for_select(Tree.quality_labels), include_blank: true) %>
+          <br />
+          <%= et.label :quality_issues, "Quality Issues (if any)" %><br />
+          <%= et.text_area :quality_issues %>
+        <% end %>
+        </fieldset>
+      <% end %>
+    </fieldset>
+
+
     <%= submit 'Take Attendance' %>
   <% end %>
   <% content_for :js_ready do %>
@@ -113,3 +155,4 @@
   <% end %>
 
 <% end %>
+<%= end_cols %>

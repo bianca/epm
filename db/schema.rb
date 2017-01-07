@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151118044658) do
+ActiveRecord::Schema.define(version: 20170101011405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,9 @@ ActiveRecord::Schema.define(version: 20151118044658) do
     t.integer  "tree_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "quality"
+    t.text     "quality_issues"
+    t.float    "lbs_picked"
   end
 
   add_index "event_trees", ["event_id"], name: "index_event_trees_on_event_id", using: :btree
@@ -81,6 +84,9 @@ ActiveRecord::Schema.define(version: 20151118044658) do
     t.integer  "ward_id"
     t.integer  "equipment_set_id"
     t.integer  "agency_id"
+    t.integer  "fun",                                            default: 0
+    t.text     "first_aid"
+    t.integer  "lbs_to_agency"
   end
 
   add_index "events", ["coordinator_id"], name: "index_events_on_coordinator_id", using: :btree

@@ -6,6 +6,21 @@ class Event < ActiveRecord::Base
   accepts_nested_attributes_for :event_trees
   strip_attributes
 
+  def self.fun_labels 
+  {
+    "1 - Really bad" => 1,
+    "2 - Not good" => 2,
+    "3 - Not a great pick" => 3,
+    "4 - Bumpy" => 4,
+    "5 - A little bumpy" => 5,
+    "6 - Okay" => 6, 
+    "7 - Good" => 7,
+    "8 - Pretty Darn Good" => 8,
+    "9 - Fantastic" => 9,
+    "10 - Sublime" => 10
+  }
+  end
+
   def self.csv(events)
     # exports events; adds info for number of people for each event user status, i.e. how many attended, how many were waitlisted, etc.
     CSV.generate force_quotes: true do |csv|

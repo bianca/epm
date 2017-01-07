@@ -57,6 +57,16 @@ class Ability
         #cannot :index, Tree
         can :create, Tree
       end
+      if user.has_role?(:tree_registrant) || user.has_role?(:tree_owner)
+        cannot :manage, [Event, Role, EquipmentSet, Agency, Tree, :setting]
+        can :create, [Tree]
+        can :show, Event do |event|
+          event.trees.select{|tree| tree.submitter == user || tree.owner == user}.length > 0
+        end  
+        can :manage, Tree do |tree|
+          tree.submitter == user || tree.owner == user
+        end      
+      end
 
     end
 

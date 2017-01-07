@@ -340,8 +340,24 @@
 
   def take_attendance
     params['attendance'] ||= []
-    attended_eu_ids = params['attendance'].map{|eu_id, v| eu_id.to_i}
-    @event.take_attendance attended_eu_ids
+    #attended_eu_ids = params['attendance'].map{|eu_id, v| eu_id.to_i}
+    #@event.take_attendance attended_eu_ids
+    puts params.to_yaml
+    puts params['event']['fun']
+    @event.fun = params['event']['fun']
+    @event.lbs_to_agency = params['event']['lbs_to_agency']
+    @event.first_aid = params['event']['first_aid']
+    @event.agency_id = params['event']['agency_id']
+    @event.save
+    @event.event_trees.each do |et|
+      puts et.id
+      puts "sdfsdfsdfsd"
+      puts params['event']['event_tree'].to_yaml
+        et.quality = params['event']['event_tree'][et.id.to_s]['quality']
+        et.quality_issues = params['event']['event_tree'][et.id.to_s]['quality_issues']
+        et.lbs_picked = params['event']['event_tree'][et.id.to_s]['lbs_picked']
+        et.save
+    end
     redirect_to who_event_path(@event), notice: 'Attendance taken.'
   end
 
@@ -349,7 +365,7 @@
 
     def event_params
       # should actually only enable :status to be set by admin. todo
-      params.require(:event).permit(:name, :description, :notes, :start, :start_day, :start_time_12, :start_time_p, :duration, :finish, :equipment_set_id, :agency_id, :coordinator_id, :notify_of_changes, :status, :address, :lat, :lng, :hide_specific_location, :min, :max, :ward_id, :urgent_invite, tree_ids: [])
+      params.require(:event).permit(:name, :description, :notes, :start, :start_day, :start_time_12, :start_time_p, :duration, :finish, :equipment_set_id, :agency_id, :coordinator_id, :notify_of_changes, :status, :address, :lat, :lng, :hide_specific_location, :min, :max, :ward_id, :urgent_invite, :fun, :lbs_to_agency, :first_aid, tree_ids: [])
     end
 
 end

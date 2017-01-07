@@ -15,6 +15,15 @@ class Tree < ActiveRecord::Base
   #attr_accessible :lname, :owner_attributes
   #validates :lname, presence: true
 
+  def self.quality_labels 
+  {
+    "1 - Not Edible" => 1,
+    "2 - Some Edible" => 2,
+    "3 - Edible" => 3,
+    "4 - Good" => 4,
+    "5 - Great" => 5
+  }
+  end
 
   def legit_owner(attributes)
     attributes[:fname].blank?
