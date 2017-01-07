@@ -42,6 +42,6 @@ class EquipmentSetsController < ApplicationController
     end
 
     def equipment_set_params
-      params.require(:equipment_set).permit(:title, :description)
+      params.require(:equipment_set).permit(:title, :description, :address, :lat, :lng)
     end
 end
