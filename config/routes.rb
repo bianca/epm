@@ -1,8 +1,12 @@
 Epm::Application.routes.draw do
 
-  resources :agencies
+  resources :agencies do
+    get 'order', on: :collection
+  end
 
-  resources :equipment_sets
+  resources :equipment_sets do
+    get 'order', on: :collection
+  end
 
   root 'events#dashboard'
 

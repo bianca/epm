@@ -19,6 +19,68 @@
     <%= f.label :description %><br>
     <%= f.text_area :description %>
   </div>
+  <div class="field">
+    Hours of Operation<br>
+    <table>
+    <tr>
+      <th colspan="2">Monday</th>
+      <th colspan="2">Tuesday</th>
+      <th colspan="2">Wednesday</th>
+      <th colspan="2">Thursday</th>
+      <th colspan="2">Friday</th>
+      <th colspan="2">Saturday</th>
+      <th colspan="2">Sunday</th>
+    </tr>
+    <tr>
+      <td>
+        <%= f.time_field :mondayopen %>
+      </td>
+      <td>      
+        <%= f.time_field :mondayclose %>
+      </td>
+      <td>
+        <%= f.time_field :tuesdayopen %>
+      </td>
+      <td>
+        <%= f.time_field :tuesdayclose %>
+      </td>
+      <td>
+        <%= f.time_field :wednesdayopen %>
+      </td>
+      <td>
+        <%= f.time_field :wednesdayclose %>
+      </td>
+      <td>
+        <%= f.time_field :thursdayopen %>
+      </td>
+      <td>
+        <%= f.time_field :thursdayclose %>
+      </td>
+      <td>
+        <%= f.time_field :fridayopen %>
+      </td>
+      <td>
+        <%= f.time_field :fridayclose %>
+      </td>
+      <td>
+        <%= f.time_field :saturdayopen %>
+      </td>
+      <td>
+        <%= f.time_field :saturdayclose %>
+      </td>
+      <td>
+        <%= f.time_field :sundayopen %>
+      </td>
+      <td>
+        <%= f.time_field :sundayclose %> 
+      </td>
+  </tr>
+</table>
+  </div>
+
+
+
+
   <%= render layout: 'shared/address_form', locals: { f: f } do %>
   <% end %>
 

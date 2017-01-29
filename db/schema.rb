@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170107020426) do
+ActiveRecord::Schema.define(version: 20170107034754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,8 +22,22 @@ ActiveRecord::Schema.define(version: 20170107020426) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "address"
-    t.decimal  "lat",         precision: 9, scale: 6
-    t.decimal  "lng",         precision: 9, scale: 6
+    t.decimal  "lat",            precision: 9, scale: 6
+    t.decimal  "lng",            precision: 9, scale: 6
+    t.time     "mondayopen"
+    t.time     "mondayclose"
+    t.time     "tuesdayopen"
+    t.time     "tuesdayclose"
+    t.time     "wednesdayopen"
+    t.time     "wednesdayclose"
+    t.time     "thursdayopen"
+    t.time     "thursdayclose"
+    t.time     "fridayopen"
+    t.time     "fridayclose"
+    t.time     "saturdayopen"
+    t.time     "saturdayclose"
+    t.time     "sundayopen"
+    t.time     "sundayclose"
   end
 
   add_index "agencies", ["lat", "lng"], name: "index_agencies_on_lat_and_lng", using: :btree

@@ -25,6 +25,11 @@ class EquipmentSetsController < ApplicationController
     end
   end
 
+  def order
+      @equipment_sets = EquipmentSet.closest [params['lat'], params['lng']]
+      render json: @equipment_sets
+  end
+
   def update
     @equipment_set.update(equipment_set_params)
     redirect_to @equipment_set
