@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170107034754) do
+ActiveRecord::Schema.define(version: 20170129183302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,21 +94,23 @@ ActiveRecord::Schema.define(version: 20170107034754) do
     t.text     "description"
     t.integer  "coordinator_id"
     t.text     "notes"
-    t.integer  "status",                                         default: 0
+    t.integer  "status",                                           default: 0
     t.text     "address"
-    t.decimal  "lat",                    precision: 9, scale: 6
-    t.decimal  "lng",                    precision: 9, scale: 6
-    t.integer  "min",                                            default: 0
+    t.decimal  "lat",                      precision: 9, scale: 6
+    t.decimal  "lng",                      precision: 9, scale: 6
+    t.integer  "min",                                              default: 0
     t.integer  "max"
-    t.boolean  "hide_specific_location",                         default: true
-    t.boolean  "below_min",                                      default: false
-    t.boolean  "reached_max",                                    default: false
+    t.boolean  "hide_specific_location",                           default: true
+    t.boolean  "below_min",                                        default: false
+    t.boolean  "reached_max",                                      default: false
     t.integer  "ward_id"
     t.integer  "equipment_set_id"
     t.integer  "agency_id"
-    t.integer  "fun",                                            default: 0
+    t.integer  "fun",                                              default: 0
     t.text     "first_aid"
     t.integer  "lbs_to_agency"
+    t.text     "owner_availability"
+    t.datetime "owner_availability_start"
   end
 
   add_index "events", ["coordinator_id"], name: "index_events_on_coordinator_id", using: :btree

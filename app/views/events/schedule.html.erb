@@ -1,0 +1,85 @@
+<script language="">    
+	$(document).ready(function () {
+        $(".av").click(function () {
+        	var id = $(this).attr("id")
+        	var new_id = id.replace("_switch", "")
+        	var switch_value = $("#"+new_id).val() == "true" ? true : false
+        	switch_value = !switch_value
+        	$("#"+new_id).val(switch_value)
+        	if (!!switch_value) {
+        		$(this).removeClass("clicked")
+        	} else {
+        		$(this).addClass("clicked")
+        	}
+        	var str = ""
+        	for (var i=1; i<43; i++) {
+        		var v = $("#availability_"+i).val()
+        		str = str + (v == "true" ? 1 : 0).toString()
+        	}
+        	$("#event_owner_availability").val(str)
+        	
+         	//
+      	});
+    });
+</script>
+<style>
+td {
+	font-size: 10px;
+}
+.av {
+	width: 60px;
+	height: 30px;
+	background-color: #00ff00;
+}
+.clicked {
+	background-color: #ff0000;
+
+}
+.av:before {
+	content: "Available";
+}
+.av.clicked:before {
+	content: "Unavailable";
+}
+</style>
+<p>
+Hey there! You'll see below a table of the next two weeks divided into morning/afternoon/evening. Please leave available times green and click on unavailable times to turn them red. Thanks!
+</p>
+<%= form_for Event.new do |f| %>
+<table>
+<tr>
+<td></td>
+<%
+	time_of_day = ["Morning (9am-1pm)","Afternoon (1pm-5pm)","Evening (5pm-9pm)"]
+	start = Time.zone.now + 7.days
+	(1..14).each do |i| %>
+		<td><%=(start + (i).day).strftime("%a %b %d") %></td>
+	<% 
+	end
+%>
+</tr>
+<%
+	(1..3).each do |i| 
+		%><tr>
+		<td>
+		<%=time_of_day[i-1] %>
+		</td>
+		<%
+		(1..14).each do |j| %>
+			<td class="av" id="availability_switch_<%=((i-1)*14+j).to_s %>">
+				<input type="hidden" id="availability_<%=((i-1)*14+j).to_s %>" value="true" />
+			</td>
+		<% 
+		end
+		%></tr><%
+	end
+%>
+</table>
+<!-- f.hidden_field :tree_ids, value: params['tree_id'] %-->
+<%= hidden_field_tag  "event[tree_ids][]",params['tree_id'] %> 
+<%= f.hidden_field :owner_availability %>
+<%= f.hidden_field :owner_availability_start, value: start %>
+<%= submit %>
+<% end %>
+
+

@@ -29,6 +29,14 @@ class TreesController < ApplicationController
     end
   end
 
+  def inviteowner 
+    if EventMailer.schedule_pick_with_user(@tree).deliver
+      flash[:notice] = "Scheduling email sent to #{@tree.owner.fname} at #{@tree.owner.email}."
+    else 
+      flash[:error] = "Email not sent. Try again?"
+    end
+  end
+
   def mine
     @page = 1
     if params["page"].present?

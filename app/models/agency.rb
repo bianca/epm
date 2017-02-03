@@ -21,7 +21,6 @@ class Agency < ActiveRecord::Base
 
   def alreadyrecieved?(in_the_last_week, now)
     event_count = Event.where("events.agency_id = ? and events.start > ? and events.start < ?", id, in_the_last_week, now).reorder('').count()
-    puts event_count
       return event_count > 0
   end
 

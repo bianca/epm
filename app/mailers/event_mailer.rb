@@ -69,6 +69,18 @@ class EventMailer < ActionMailer::Base
     mail bcc: to(users), subject: "Reminder: #{event.display_name} is in #{pluralize event.hours_until, 'hour'}"
   end
 
+  def attendance_changes(event, users = nil)
+    @event = event
+    users ||= @event.users
+    @user = users.find{|u| u.ability.cannot?(:read_notes, event)} || users.first
+    mail bcc: to(users), subject: "Reminder: #{event.display_name} is in #{pluralize event.hours_until, 'hour'}"
+  end
+
+  def schedule_pick_with_user(tree)
+    @tree = tree
+    mail to: to(tree.owner), subject: "Can we schedule a pick for your #{tree.species} tree?"
+  end
+
   private
 
     def to(users)

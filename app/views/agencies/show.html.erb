@@ -3,6 +3,74 @@
 <p>
   <strong>Description:</strong>
   <%= @agency.description %>
+
+    <div class="field">
+    Hours of Operation<br>
+    <table>
+    <tr>
+      <th width="100">Monday</th>
+      <th width="100">Tuesday</th>
+      <th width="100">Wednesday</th>
+      <th width="100">Thursday</th>
+      <th width="100">Friday</th>
+      <th width="100">Saturday</th>
+      <th width="100">Sunday</th>
+    </tr>
+    <tr>
+      
+      	<td>
+      		<% if @agency.mondayopen.blank? || @agency.mondayclose.blank? %>
+            	Closed?
+            <% else %> 
+        		<%= @agency.mondayopen.strftime("%I:%M %p") %>-<%= @agency.mondayclose.strftime("%I:%M %p") %>
+        	<% end %>
+        </td>
+      	<td>
+      		<% if @agency.tuesdayopen.blank? || @agency.tuesdayclose.blank? %>
+            	Closed?
+            <% else %> 
+        		<%= @agency.tuesdayopen.strftime("%I:%M %p") %>-<%= @agency.tuesdayclose.strftime("%I:%M %p") %>
+        	<% end %>
+        </td>
+      	<td>
+      		<% if @agency.wednesdayopen.blank? || @agency.wednesdayclose.blank? %>
+            	Closed?
+            <% else %> 
+        		<%= @agency.wednesdayopen.strftime("%I:%M %p") %>-<%= @agency.wednesdayclose.strftime("%I:%M %p") %>
+        	<% end %>
+        </td>
+      	<td>
+      		<% if @agency.thursdayopen.blank? || @agency.thursdayclose.blank? %>
+            	Closed?
+            <% else %> 
+        		<%= @agency.thursdayopen.strftime("%I:%M %p") %>-<%= @agency.thursdayclose.strftime("%I:%M %p") %>
+        	<% end %>
+        </td>
+      	<td>
+      		<% if @agency.fridayopen.blank? || @agency.fridayclose.blank? %>
+            	Closed?
+            <% else %> 
+        		<%= @agency.fridayopen.strftime("%I:%M %p") %>-<%= @agency.fridayclose.strftime("%I:%M %p") %>
+        	<% end %>
+        </td>
+      	<td>
+      		<% if @agency.saturdayopen.blank? || @agency.saturdayclose.blank? %>
+            	Closed?
+            <% else %> 
+        		<%= @agency.saturdayopen.strftime("%I:%M %p") %>-<%= @agency.saturdayclose.strftime("%I:%M %p") %>
+        	<% end %>
+        </td>
+      	<td>
+      		<% if @agency.sundayopen.blank? || @agency.sundayclose.blank? %>
+            	Closed?
+            <% else %> 
+        		<%= @agency.sundayopen.strftime("%I:%M %p") %>-<%= @agency.sundayclose.strftime("%I:%M %p") %>
+        	<% end %>
+        </td>
+
+  </tr>
+</table>
+
   <%= render 'shared/address_and_map', thing: @agency %>
 </p>
 </div>

@@ -57,7 +57,7 @@ class Event < ActiveRecord::Base
     end
   end
 
-  enum status: [:proposed, :approved, :cancelled]
+  enum status: [:proposed, :approved, :cancelled, :toschedule, :solicited]
 
   def can_edit_attribute?(attribute, user)
     return false unless user.ability.can?(:edit, self)
@@ -194,6 +194,8 @@ class Event < ActiveRecord::Base
   scope :participatable, -> { where.not(start: nil).where.not(coordinator_id: nil).where('events.status = ?', statuses[:approved]) }
   scope :not_cancelled, -> { where 'events.status != ?', statuses[:cancelled] }
   scope :awaiting_approval, -> { not_past.where 'events.status = ? AND coordinator_id IS NOT NULL AND start IS NOT NULL', statuses[:proposed] }
+  scope :awaiting_scheduling, -> { not_past.where 'events.status = ?', statuses[:toschedule] }
+  scope :awaiting_response, -> { not_past.where 'events.status = ?', statuses[:solicited] }
   scope :needing_participants, -> { participatable.not_past.where(below_min: true) }
   scope :accepting_participants, -> { participatable.not_past.where(reached_max: false) }
   scope :accepting_not_needing_participants, -> { accepting_participants.where(below_min: false) }

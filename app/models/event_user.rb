@@ -46,6 +46,7 @@ class EventUser < ActiveRecord::Base
         event.calculate_participants
       end
     end
+    notify_coordinator(event)
     self
   end
 
@@ -62,10 +63,19 @@ class EventUser < ActiveRecord::Base
     end
     if self.status && save && was_attending && !attending? && !event.past?
       event.add_from_waitlist if event.time_until > 5.hours # todo: allow configurability of this number
-      EventMailer.unattend(event, user).deliver unless action_by_self
+      EventMailer.unattend(event, user).deliver unless action_by_self      
       event.calculate_participants
     end
+    notify_coordinator(event)
     self
+  end
+
+  def notify_coordinator event
+    puts (event.start - Time.now).hours
+    puts "OKKKKKKKKK"
+    if event.time_until < 24.hours
+      EventMailer.attendance_changes(event, [event.coordinator]).deliver 
+    end
   end
 
 end

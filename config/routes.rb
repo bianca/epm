@@ -22,9 +22,12 @@ Epm::Application.routes.draw do
   get 'my_wards', to: 'users#my_wards'
 
   resources :events do
-    get 'calendar', on: :collection
-    get 'dashboard', on: :collection
-    get 'stats', on: :collection
+    collection do 
+      get 'calendar'
+      get 'dashboard'
+      get 'stats'
+      get 'schedule'
+    end
     member do
       get 'who'
       get 'cancel', to: 'events#ask_to_cancel'
@@ -46,6 +49,7 @@ Epm::Application.routes.draw do
   resources :trees do
     get 'copy', on: :member
     get 'copy_location', on: :member
+    get 'inviteowner', on: :member
     get 'mine', on: :collection
     get 'dashboard', on: :collection
     get 'closest', on: :collection

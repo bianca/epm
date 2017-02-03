@@ -1,0 +1,3 @@
+<p>Attendance changes have been made to <%= link_to @event.display_name(@user), event_url(@event) %>.<p>
+
+<%= render 'event', event: @event, user: @user %>

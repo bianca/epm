@@ -42,6 +42,8 @@
       max = 10 # used for sections which do not need to show all
       if current_user.has_role? :admin
         @sections << { q: Event.awaiting_approval, name: 'Awaiting Approval' }
+        @sections << { q: Event.awaiting_scheduling, name: 'Awaiting Scheduling' }
+        #@sections << { q: Tree.awaiting_response, name: 'Awaiting User Response' }
       end 
       if current_user.has_role? :participant
         @sections << { q: current_user.open_invites, name: "Recommended #{Configurable.event.pluralize.titlecase}", id: 'invited' }
@@ -140,6 +142,9 @@
     end
   end
 
+  def schedule
+  end 
+
   def new
     attrs = {}
     attrs[:start] = "#{params['start_day']} #{Event.default_time}" if params['start_day']
@@ -169,7 +174,31 @@
   def create
     redirect_to(root_path, notice: "#{Configurable.event.capitalize} not saved.") and return if params['commit'] && params['commit'].downcase == 'cancel'
     @event = Event.new event_params
-    if @event.save
+    if params['event']['owner_availability'].present?
+      @tree = Tree.find(params['event']["tree_ids"][0])
+      name = @tree.species
+      if @tree.subspecies.present?
+        name = name + " (" + @tree.subspecies + ")"
+      end
+      @event.name = name + " " + Configurable.event.capitalize
+      @event.save
+      #@event.start = DateTime.parse(params['event']['owner_availability_start'])
+      @event.save
+      puts @event.start.to_yaml
+      @event.address = @tree.owner.address
+      @event.save
+      @event.lat = @tree.owner.lat
+      @event.save
+      @event.lng = @tree.owner.lng
+      @event.save
+      @event.status = Event.statuses[:toschedule]
+      @event.save
+      puts @event.to_yaml
+      @event.save
+      @event.trees = [@tree]
+      @event.save
+      redirect_to @tree, notice: "Thanks! We'll get right back to you on the #{Configurable.event.capitalize} for your #{@event.trees[0].species} tree."
+    elsif @event.save
       if !@event.past?
         if @event.coordinator && @event.coordinator != current_user
           EventMailer.coordinator_assigned(@event).deliver
@@ -365,7 +394,7 @@
 
     def event_params
       # should actually only enable :status to be set by admin. todo
-      params.require(:event).permit(:name, :description, :notes, :start, :start_day, :start_time_12, :start_time_p, :duration, :finish, :equipment_set_id, :agency_id, :coordinator_id, :notify_of_changes, :status, :address, :lat, :lng, :hide_specific_location, :min, :max, :ward_id, :urgent_invite, :fun, :lbs_to_agency, :first_aid, tree_ids: [])
+      params.require(:event).permit(:name, :description, :notes, :start, :start_day, :start_time_12, :start_time_p, :duration, :finish, :equipment_set_id, :agency_id, :coordinator_id, :notify_of_changes, :status, :address, :lat, :lng, :hide_specific_location, :min, :max, :ward_id, :urgent_invite, :fun, :lbs_to_agency, :first_aid, :owner_availability, :owner_availability_start, tree_ids: [])
     end
 
 end
