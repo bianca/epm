@@ -2,7 +2,10 @@ class Event < ActiveRecord::Base
   has_many :event_trees
   belongs_to :equipment_set
   belongs_to :agency
+  has_many :event_users
   has_many :trees, :through => :event_trees 
+  has_many :users, :through => :event_users 
+  belongs_to :owners, class_name: "User"
   accepts_nested_attributes_for :event_trees
   strip_attributes
 

@@ -5,30 +5,81 @@
 
   def index
     @events = Event.all
-    if params[:commit] == "Search"
-      statuses_array = []
-      st = params[:statuses].select{|statusi, statusbool| statusbool == "1" }
-      st.each do | k,v |
-        if Event.statuses[k.to_sym]
-          statuses_array << Event.statuses[k]
+    @search = {}
+    @search_types = {
+    "Name" => 'name',
+    "Address" => 'address',
+    "Equipment Sets" => 'equipment_set',
+    "Agency" => 'agency',
+    "Coordinator" => 'coordinator',
+    "Picker Name" => 'picker_name',
+    "Owner Name" => 'owner_name'
+    }
+
+    if params[:statuses].present? || params[:event].present?
+      if params[:event][:search_value].present? 
+        params[:event][:search_value].each_with_index do  |value, i|
+          if !value.blank?
+            @search[params[:event][:search_type][i].to_s] = value
+          end
         end
       end
-      @events = @events.where(status: statuses_array)
-    end
-    respond_to do |format|
-      format.ics do
-        # todo: implement access token https://blog.nop.im/entries/calendar-feed-with-rails
-        cal = Icalendar::Calendar.new
-        cal.properties["X-WR-CALNAME"] = Configurable.title
-        cal.properties["NAME"] = Configurable.title
-        Event.with_date.each {|event| cal.add_event event.to_ical(request.host) }
-        render text: cal.to_ical
+      # name, address, equipment set, agency, supreme gleaner, picker name, homeowner name
+      if @search['name'].present?
+        @events = @events.where('name ILIKE ?', "%"+@search["name"]+"%")
       end
-      format.csv do
-        @events = can?(:export, Event) ? Event.all : []
-        send_data Event.csv @events
+      if @search['address'].present?
+        @events = @events.joins("left join event_trees on events.id=event_trees.event_id").joins("left join trees on trees.id=event_trees.tree_id").joins("left join users on users.id=trees.owner_id").where('events.address ILIKE ? or users.address ILIKE ?', ("%"+@search["address"]+"%"), ("%"+@search["address"]+"%"))
       end
+      if @search['equipment_set'].present?
+        @events = @events.joins(:equipment_set).where("equipment_sets.title ILIKE ?", "%"+@search['equipment_set']+"%")
+      end
+      if @search['agency'].present?
+        @events = @events.joins(:agency).where("agencies.title ILIKE ?", "%"+@search['agency']+"%")
+      end
+      if @search['coordinator'].present?
+        @events = @events.joins(:coordinator).where("concat(fname,' ',lname) ILIKE ?", "%"+@search['coordinator']+"%")
+      end
+      if @search['picker_name'].present?
+        @events = @events.joins(:users).where("concat(fname,' ',lname) ILIKE ?", "%"+@search['picker_name']+"%")
+      end
+      if @search['owner_name'].present?
+        @events = @events.joins("left join event_trees on events.id=event_trees.event_id").joins("left join trees on trees.id=event_trees.tree_id").joins("left join users on users.id=trees.owner_id").where("concat(users.fname,' ',users.lname) ILIKE ?", "%"+@search['owner_name']+"%")
+      end      
+      if params[:statuses].present?
+        statuses_array = []
+        st = params[:statuses].select{|statusi, statusbool| statusbool == "1" }
+        st.each do | k,v |
+          if Event.statuses[k.to_sym]
+            statuses_array << Event.statuses[k]
+          end
+        end
+        if statuses_array.count > 0
+          @events = @events.where(status: statuses_array)
+        end
+      end
+      offset = 0
+      if params['offset'].present?
+        offset = params['offset'].to_i
+      end
+      #@events = @events.limit(50).offset(offset)
+    
     end
+      respond_to do |format|
+        format.html
+        format.ics do
+          # todo: implement access token https://blog.nop.im/entries/calendar-feed-with-rails
+          cal = Icalendar::Calendar.new
+          cal.properties["X-WR-CALNAME"] = Configurable.title
+          cal.properties["NAME"] = Configurable.title
+          Event.with_date.each {|event| cal.add_event event.to_ical(request.host) }
+          render text: cal.to_ical
+        end
+        format.csv do
+          @events = can?(:export, Event) ? Event.all : []
+          send_data Event.csv @events
+        end
+      end
   end
 
   def dashboard
@@ -103,7 +154,6 @@
           @attendance[year][category] = 0
         end
         p = User.participation(year, formula)
-        puts p.to_yaml
         if p.present?
           @attendance[year][category] = @attendance[year][category] + p.length
         end
@@ -184,7 +234,6 @@
       @event.save
       #@event.start = DateTime.parse(params['event']['owner_availability_start'])
       @event.save
-      puts @event.start.to_yaml
       @event.address = @tree.owner.address
       @event.save
       @event.lat = @tree.owner.lat
@@ -193,7 +242,6 @@
       @event.save
       @event.status = Event.statuses[:toschedule]
       @event.save
-      puts @event.to_yaml
       @event.save
       @event.trees = [@tree]
       @event.save
@@ -371,17 +419,12 @@
     params['attendance'] ||= []
     #attended_eu_ids = params['attendance'].map{|eu_id, v| eu_id.to_i}
     #@event.take_attendance attended_eu_ids
-    puts params.to_yaml
-    puts params['event']['fun']
     @event.fun = params['event']['fun']
     @event.lbs_to_agency = params['event']['lbs_to_agency']
     @event.first_aid = params['event']['first_aid']
     @event.agency_id = params['event']['agency_id']
     @event.save
     @event.event_trees.each do |et|
-      puts et.id
-      puts "sdfsdfsdfsd"
-      puts params['event']['event_tree'].to_yaml
         et.quality = params['event']['event_tree'][et.id.to_s]['quality']
         et.quality_issues = params['event']['event_tree'][et.id.to_s]['quality_issues']
         et.lbs_picked = params['event']['event_tree'][et.id.to_s]['lbs_picked']

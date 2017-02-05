@@ -71,8 +71,6 @@ class EventUser < ActiveRecord::Base
   end
 
   def notify_coordinator event
-    puts (event.start - Time.now).hours
-    puts "OKKKKKKKKK"
     if event.time_until < 24.hours
       EventMailer.attendance_changes(event, [event.coordinator]).deliver 
     end

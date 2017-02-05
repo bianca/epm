@@ -1,7 +1,18 @@
+<%
+
+
+%>
+
 <%= form_tag events_path, method: :get do %>
   <% content_for :js_ready do %>
     $('checkbox').change(function(){
       $(this).closest('form').submit();
+    });
+    $('#more_options').click(function(){
+      $("#more_searches").append($("#multiple_searches").clone());
+    });
+    $('.delete').click(function(){
+      $(this).parent().remove();
     });
   <% end %>
 
@@ -9,7 +20,28 @@
     <%= check_box "statuses", k, checked: params['statuses'] ? params['statuses'][k] == "1" : false %>
     <%= label "statuses", k %>
   <% end %>
-  <%= submit 'Search' %>
+
+<% if @search.present? %>
+  <div id="existing_searches">
+   <% @search.each_with_index do |(key, value), index| %>
+   <div>
+    <%=select_tag("event[search_type][]", options_for_select(@search_types,key), include_blank: true) %>
+    <%=text_field_tag("event[search_value][]", value) %> <input type="button" class="delete" value="X" />
+    </div>
+    <% end %>
+    </div>
+  <% end %>
+<div id="multiple_searches">
+  <div class="search_block">
+    <%=select_tag("event[search_type][]", options_for_select(@search_types,""), include_blank: true) %>
+    <%=text_field_tag("event[search_value][]") %><input type="button" class="delete" value="X" />
+  </div>
+</div>
+<div id="more_searches">
+</div>
+
+  <input type="button" value="+ more search options" id="more_options" />
+  <%= submit 'Search', {'id'=> "commit"} %>
 <% end %>
 
 <% if @events.any? %>

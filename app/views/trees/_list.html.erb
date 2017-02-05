@@ -26,6 +26,9 @@
         <div style="clear: none; float: left">
           <%= link_to "Schedule #{Configurable.event.titlecase}", new_event_path(tree_id: tree.id), {class: "button"} %>
         </div>
+        <div style="clear: none; float: left">
+          <%= link_to "Schedule #{Configurable.event.titlecase} with Owner", inviteowner_tree_path(id: tree.id), {class: "button"} %>
+        </div>
       </li>
     <% end %>
 </ul>

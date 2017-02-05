@@ -12,7 +12,9 @@ class User < ActiveRecord::Base
 
 
   validate :hasPurpose
-
+  has_many :event_users
+  has_many :events, :through => :event_users 
+  has_many :events, :through => :owners 
   has_many :trees, foreign_key: 'owner_id'
 
   def hasPurpose
