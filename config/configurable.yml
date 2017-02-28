@@ -51,3 +51,13 @@ webmaster:
   name: Webmaster's email address
   type: string
   default: ''
+
+default_event_notes:
+  name: Default Event Notes
+  type: text
+  default: ''
+
+default_event_description:
+  name: Default Event Description
+  type: text
+  default: ''
