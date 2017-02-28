@@ -98,9 +98,6 @@
         @sections << { q: Event.awaiting_scheduling, name: 'Awaiting Scheduling' }
         #@sections << { q: Tree.awaiting_response, name: 'Awaiting User Response' }
       end 
-      if current_user.has_role? :participant
-        @sections << { q: current_user.open_invites, name: "Recommended #{Configurable.event.pluralize.titlecase}", id: 'invited' }
-      end
       if current_user.has_role? :coordinator
         @sections << { q: current_user.coordinating_events.needing_attendance_taken, name: 'Needing Attendance Taken' }
         @sections << { q: current_user.coordinating_events.not_past, name: "#{Configurable.event.pluralize.titlecase} Led By Me", id: 'coordinating' }
