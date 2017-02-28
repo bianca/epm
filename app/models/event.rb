@@ -273,6 +273,14 @@ class Event < ActiveRecord::Base
     start.present? ? (time_until / 1.hour).round : nil
   end
 
+  def previous
+    self.class.unscoped.where("start <= ?",start).where.not(id: id).order('start DESC, id DESC').limit(1).first
+  end
+
+  def next
+    self.class.where("start >= ?",start).where.not(id: id).order('start ASC, id ASC').limit(1).first
+  end
+
   def awaiting_approval?
     !past? && proposed? && coordinator && start
   end

@@ -34,19 +34,19 @@
         @events = @events.joins("left join event_trees on events.id=event_trees.event_id").joins("left join trees on trees.id=event_trees.tree_id").joins("left join users on users.id=trees.owner_id").where('events.address '+like+' ? or users.address '+like+' ?', ("%"+@search["address"]+"%"), ("%"+@search["address"]+"%"))
       end
       if @search['equipment_set'].present?
-        @events = @events.joins(:equipment_set).where("equipment_sets.title '+like+' ?", "%"+@search['equipment_set']+"%")
+        @events = @events.joins(:equipment_set).where("equipment_sets.title "+like+" ?", "%"+@search['equipment_set']+"%")
       end
       if @search['agency'].present?
-        @events = @events.joins(:agency).where("agencies.title '+like+' ?", "%"+@search['agency']+"%")
+        @events = @events.joins(:agency).where("agencies.title "+like+" ?", "%"+@search['agency']+"%")
       end
       if @search['coordinator'].present?
-        @events = @events.joins(:coordinator).where("concat(fname,' ',lname) '+like+' ?", "%"+@search['coordinator']+"%")
+        @events = @events.joins(:coordinator).where("concat(fname,' ',lname) "+like+" ?", "%"+@search['coordinator']+"%")
       end
       if @search['picker_name'].present?
-        @events = @events.joins(:users).where("concat(fname,' ',lname) '+like+' ?", "%"+@search['picker_name']+"%")
+        @events = @events.joins(:users).where("concat(fname,' ',lname) "+like+" ?", "%"+@search['picker_name']+"%")
       end
       if @search['owner_name'].present?
-        @events = @events.joins("left join event_trees on events.id=event_trees.event_id").joins("left join trees on trees.id=event_trees.tree_id").joins("left join users on users.id=trees.owner_id").where("concat(users.fname,' ',users.lname) '+like+' ?", "%"+@search['owner_name']+"%")
+        @events = @events.joins("left join event_trees on events.id=event_trees.event_id").joins("left join trees on trees.id=event_trees.tree_id").joins("left join users on users.id=trees.owner_id").where("concat(users.fname,' ',users.lname) "+like+" ?", "%"+@search['owner_name']+"%")
       end      
       if params[:statuses].present?
         statuses_array = []

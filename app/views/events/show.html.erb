@@ -36,6 +36,14 @@
     <%= link_to 'Cancel or Delete', cancel_event_path(@event) %>
   <% end %>
 
+  <% if can?(:manage, @event) 
+        if @event.previous.present? %>
+          <%= link_to "« Previous #{Configurable.event.titlecase}", event_path(@event.previous) %>
+        <% end 
+        if @event.next.present? %>
+    <%= link_to "Next #{Configurable.event.titlecase} »", event_path(@event.next) %>
+        <% end %>
+  <% end %>
 <% end %>
 
 <%= render 'rsvp' unless @event.cancelled? %>
