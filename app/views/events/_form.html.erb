@@ -393,7 +393,16 @@
 
   <script language="">
 
-    
+    var aIcon = L.icon({
+      iconUrl: '/assets/green_pin.png',
+      iconAnchor:   [12, 41],
+      iconSize:     [25, 41]
+    })
+    var eqIcon = L.icon({
+      iconUrl: '/assets/red_pin.png',
+      iconAnchor:   [12, 41],
+      iconSize:     [25, 41]
+    })    
     $(document).ready(function () {
       
         var getAgencies = function () {
@@ -422,7 +431,7 @@
                 $("#event_equipment_set_id").append(option);
                 if (a < 3) {
                   if (!!response[a].lat) {
-                    L.marker([response[a].lat,response[a].lng]).addTo(editable_map)
+                    L.marker([response[a].lat,response[a].lng], {icon: eqIcon}).addTo(editable_map)
                     .bindPopup(response[a].title +"<br />"+response[a].address)
                   } else {
                     count++
@@ -446,7 +455,7 @@
                 $("#event_agency_id").append(option);
                 if (a < count) {
                   if (!!response[a].lat) {
-                    L.marker([response[a].lat,response[a].lng]).addTo(editable_map)
+                    L.marker([response[a].lat,response[a].lng], {icon: aIcon}).addTo(editable_map)
                     .bindPopup(response[a].title +"<br />"+response[a].address)
                   } else {
                     count++
