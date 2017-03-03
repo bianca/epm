@@ -24,7 +24,7 @@ class AgenciesController < ApplicationController
       if params['day'].present?
         start_t = "#{params['day']} #{params['time']} #{params['time_p']}".to_datetime
         dayoftheweek = start_t.strftime("%A").downcase 
-        end_t = start_t + ((params['duration'].to_i/3600)).hours
+        end_t = start_t + ((params['duration'].to_i/3600)).hours + 1.hour
         @agencies.select!{|a| a.open? end_t, dayoftheweek}
       end
       render json: @agencies

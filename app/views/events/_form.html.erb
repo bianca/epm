@@ -40,6 +40,7 @@
             <%# js-formatted date above to be kept in same format as date() in helpers/events %>
             $('#time_fields').css('visibility', 'visible');
             $('#time_fields').trigger("change");
+            $('#event_start_day').change();
           }
         });
       <% end %>
@@ -92,7 +93,6 @@
             var d = new Date(day + " " + time + " " + p)
             d = d.getHours()
             if (day != "" && time != "") {
-              console.log(day, grid[day], d)
               if ((parseInt(grid[day][0]) == 1 && d >= 9 && d < 13 )
                   || (parseInt(grid[day][1]) == 1 && d >= 13 && d < 17 )
                   || (parseInt(grid[day][2]) == 1 && d >= 17 && d < 21 )
@@ -284,7 +284,7 @@
 
 
     var page = null;
-    $(document).ready(function () {
+    $(document).ready(function () { 
       var setChange = function () {
           $('[name="event[tree_ids][]"]').change(function (evt) {
               if (this.checked == true) {              
@@ -328,7 +328,6 @@
           })
       }
       setChange()
-      console.log($("#event_lat"))
       $("#event_lat").change(function (evt) {
           page = null;
           getTrees()
@@ -396,11 +395,9 @@
 
     
     $(document).ready(function () {
-        
-        $("#event_lat, #event_start_time_12, #event_start_time_p").change(function () {
-          console.log($("#event_lat").val(), !!$("#event_lat").val())
+      
+        var getAgencies = function () {
           if (!!$("#event_lat").val()) { 
-            console.log("ok")
             var data = {}
             if ($("#event_lat").val() != "") {
               data["lat"] = $("#event_lat").val()
@@ -418,14 +415,12 @@
                 data : data
             })
             .success(function (response) {
-              console.log(response)
               $("#event_equipment_set_id").empty();
               for (var a in response) {
                 var count = 3
                 var option = $('<option></option>').attr("value", response[a].id).text(response[a].title + " ("+(Math.round(response[a].distance))+" km)");
                 $("#event_equipment_set_id").append(option);
                 if (a < 3) {
-                  console.log(response[a].lat)
                   if (!!response[a].lat) {
                     L.marker([response[a].lat,response[a].lng]).addTo(editable_map)
                     .bindPopup(response[a].title +"<br />"+response[a].address)
@@ -442,14 +437,14 @@
                 data : data
             })
             .success(function (response) {
-              console.log(response)
               var count = 3;
               $("#event_agency_id").empty();
+              var option = $('<option></option>').attr("value", "")
+              $("#event_agency_id").append(option);
               for (var a in response) {
                 var option = $('<option></option>').attr("value", response[a].id).text(response[a].title + " ("+(Math.round(response[a].distance))+" km) "+(!!response[a].alreadyrecieved ? "(Already Picked)" : ""));
                 $("#event_agency_id").append(option);
                 if (a < count) {
-                  console.log(response[a].lat)
                   if (!!response[a].lat) {
                     L.marker([response[a].lat,response[a].lng]).addTo(editable_map)
                     .bindPopup(response[a].title +"<br />"+response[a].address)
@@ -457,10 +452,18 @@
                     count++
                   }
                 }
-              }         
+              }
+              $("#event_agency_id option[value='']").attr("selected"); 
             })
             }
-          })
+          }
+
+          $("#event_start_day, #event_lat, #event_start_time_12, #event_start_time_p, #event_duration").change(function () {
+            getAgencies();
+          });
+          if ($("#event_lat").val() != "") {
+            getAgencies();
+          }
 
     })
 
