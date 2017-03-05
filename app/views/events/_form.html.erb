@@ -132,7 +132,7 @@
               <td style='background-color: #ff0000'><%=((i-1)*14+j)-1 %></td>
             <% else %>
               <td style='background-color: #00ff00'><%=((i-1)*14+j)-1 %></td>
-            <% end %>
+            <% end %> 
 
         <% 
         end
@@ -394,12 +394,12 @@
   <script language="">
 
     var aIcon = L.icon({
-      iconUrl: '/assets/green_pin.png',
+      iconUrl: '<%= image_url("green_pin.png") %>',
       iconAnchor:   [12, 41],
       iconSize:     [25, 41]
     })
     var eqIcon = L.icon({
-      iconUrl: '/assets/red_pin.png',
+      iconUrl: '<%= image_url("red_pin.png") %>',
       iconAnchor:   [12, 41],
       iconSize:     [25, 41]
     })    
