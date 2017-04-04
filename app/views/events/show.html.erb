@@ -111,12 +111,11 @@
         <% end %>
       </td>
       <td>
-        <%= et.tree.species %>
+        <%= link_to et.tree.species, tree_path(et.tree) %>
       </td>
-      <td><%= et.tree.owner.address %></td>
-
-    
-
+      <td>
+        <%= link_to et.tree.owner.address, tree_path(et.tree) %>
+      </td>
     </tr>
   <% end %>
     </tbody>

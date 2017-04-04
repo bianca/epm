@@ -40,7 +40,10 @@
     <% if user_signed_in? %>
       <nav>
         <ul>
+
+          <% if can? :index, Event %>
           <li<%= ' class="active"'.html_safe if controller_name == 'events' && action_name != 'stats' %>><%= link_to Configurable.event.pluralize.titlecase, root_path %></li>
+          <% end %>
           <% on_profile = controller_name == 'users' && params['id'].to_i == current_user.id %>
           <% if can? :index, User %>
               <li<%= ' class="active"'.html_safe if controller_name == 'users' && !on_profile %>><%= link_to 'Users', users_path %></li>

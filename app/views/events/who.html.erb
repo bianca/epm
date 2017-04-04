@@ -36,21 +36,26 @@
     </fieldset>
     <fieldset class="details">
       <legend>Post-Pick Details</legend>
-      <%= f.label :fun, "Fun Factor" %>
-      <%= f.select(:fun, options_for_select(Event.fun_labels, @event.fun), include_blank: true) %>
-      <br />
+
+
+
       <%= f.label :lbs_to_agency, "Pounds of fruit delivered to agency" %>
       <%= f.text_field :lbs_to_agency %>
-      <br />
-      <%= f.label :first_aid, "Any first aid issues?" %><br />
-      <%= f.text_area :first_aid %>
-      <br />
+      <br />      
      <% if Agency.any? %>
       <fieldset id="agency">
         <%= f.label :agency_id, "Which agency recieved the fruit?" %>
         <%= f.collection_select :agency_id, Agency.all, :id, :title, include_blank: true %>
       </fieldset>
-    <% end %>     
+    <% end %>   
+
+      <%= f.label :fun, "Fun Factor" %>
+      <%= f.select(:fun, options_for_select(Event.fun_labels, @event.fun), include_blank: true) %>
+      <br />
+      <%= f.label :first_aid, "Any first aid issues?" %><br />
+      <%= f.text_area :first_aid %>
+      <br />
+  
 
     </fieldset>
 
@@ -76,7 +81,7 @@
     </fieldset>
 
 
-    <%= submit 'Take Attendance' %>
+    <%= submit 'Submit' %>
   <% end %>
   <% content_for :js_ready do %>
     $('fieldset.users label:first')

@@ -23,10 +23,10 @@
 		<h1>Upcoming Picks for Trees I Own</h1>
 		<% @isowner.each do |tree| %>
 			<% tree.events.each do |event| %>
-				<% if event.start > DateTime.now %>
-					<% isowner_upcoming = true %>
-					<%= render 'events/event', event: event %>
-				<% end %>
+					<% if event.start && (event.start >= DateTime.now) %>
+						<% isowner_upcoming = true %>
+						<%= render 'events/event', event: event %>
+					<% end %>
 			<% end %>
 		<% end %>
 		<% if isowner_upcoming == false %>
@@ -39,7 +39,7 @@
 		<h1>Upcoming Picks for Trees I Submitted</h1>
 		<% @issubmitter.each do |tree| %>
 			<% tree.events.each do |event| %>
-				<% if event.start > DateTime.now %>
+				<% if event.start && (event.start > DateTime.now) %>
 					<% issubmitter_upcoming = true %>
 					<%= render 'events/event', event: event %>
 				<% end %>
@@ -56,7 +56,7 @@
 		<% @isowner.each do |tree| %>
 			<% tree.events.each do |event| %>
 				<% isowner_previous = true %>
-				<% if event.start < DateTime.now %>
+				<% if event.start && (event.start < DateTime.now) %>
 					<%= render 'events/event', event: event %>
 				<% end %>
 			<% end %>
@@ -72,7 +72,7 @@
 		<% @issubmitter.each do |tree| %>
 			<% tree.events.each do |event| %>
 				<% issubmitter_previous = true %>
-				<% if event.start < DateTime.now %>
+				<% if event.start && (event.start < DateTime.now) %>
 					<%= render 'events/event', event: event %>
 				<% end %>
 			<% end %>

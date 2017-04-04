@@ -62,10 +62,12 @@ class Ability
         can :create, [Tree]
         can :show, Event do |event|
           event.trees.select{|tree| tree.submitter == user || tree.owner == user}.length > 0
-        end  
+        end 
+
         can :manage, Tree do |tree|
           tree.submitter == user || tree.owner == user
-        end      
+        end 
+        cannot :index, Tree      
       end
 
     end

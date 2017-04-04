@@ -17,11 +17,11 @@ class Tree < ActiveRecord::Base
 
   def self.quality_labels 
   {
-    "1 - Not Edible" => 1,
-    "2 - Some Edible" => 2,
-    "3 - Edible" => 3,
-    "4 - Good" => 4,
-    "5 - Great" => 5
+    "1 - Great – Nearly commercial quality" => 1,
+    "2 - Pretty good – most was good to eat raw, but some would have to be processed" => 2,
+    "3 - Okay – Most would have to be processed, but some could be eaten raw" => 3,
+    "4 - Not Great – Only use is for processing" => 4,
+    "5 - Useless – best left for the birds and squirrels" => 5
   }
   end
 
