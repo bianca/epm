@@ -175,6 +175,7 @@
     @taking_attendance = false
     @show_invites = false
     @show_invite = false
+
     if @event.start
       if (current_user.has_role?(:admin) || @event.coordinator == current_user) && @event.can_accept_participants?
         eus = @event.event_users.where(status: EventUser.statuses_array(:invited, :not_attending)).group_by{|eu| eu.status}
@@ -188,7 +189,7 @@
         @can_take_attendance = can?(:take_attendance, @event) && @event.approved? && @event.event_users.where(status: EventUser.statuses_array(:attending, :attended, :no_show)).any?
         @taking_attendance = @can_take_attendance && (params['take_attendance'] || @event.event_users.where(status: EventUser.statuses[:attending]).any?)
       end
-    end
+    end 
   end
 
   def schedule
@@ -418,6 +419,27 @@
     params['attendance'] ||= []
     #attended_eu_ids = params['attendance'].map{|eu_id, v| eu_id.to_i}
     #@event.take_attendance attended_eu_ids
+    if params["volunteer_notes"].present?
+      admins = User.admins.reject{|u| u == current_user}
+      EventMailer.volunteer_notes(@event, params["volunteer_notes"], admins).deliver
+    end
+    if params["equipment_set_notes"].present? && @event.equipment_set_id
+      admins = User.admins.reject{|u| u == current_user}
+      @event.equipment_set = EquipmentSet.find(@event.equipment_set_id)
+      EventMailer.equipment_set_notes(@event, params["equipment_set_notes"], admins).deliver
+      if @event.equipment_set.issues.blank?
+        @event.equipment_set.issues = ""
+      end
+      @event.equipment_set.issues = @event.equipment_set.issues + " (" + Time.now.strftime("%m/%d/%Y") + " - " + params["equipment_set_notes"] + ")"
+      @event.equipment_set.save
+    end
+    if params["property_notes"].present? && @event.event_trees.present?
+      if @event.event_trees[0].tree.owner.propertynotes.blank?
+        @event.event_trees[0].tree.owner.propertynotes = ""
+      end
+      @event.event_trees[0].tree.owner.propertynotes = @event.event_trees[0].tree.owner.propertynotes + " (" + Time.now.strftime("%m/%d/%Y") + " - " + params["property_notes"] + ")"
+      @event.event_trees[0].tree.owner.save
+    end
     @event.fun = params['event']['fun']
     @event.lbs_to_agency = params['event']['lbs_to_agency']
     @event.first_aid = params['event']['first_aid']

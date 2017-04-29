@@ -55,7 +55,18 @@
       <%= f.label :first_aid, "Any first aid issues?" %><br />
       <%= f.text_area :first_aid %>
       <br />
-  
+
+      What should NFFTT should know - or take action on - before next season?<br />
+      <span style="font-style: italic; font-size: 13px">Tell us if the tree is too high and not worth picking, the property is dangerous, or there was an unhappy homeowner.</span>
+      <%= text_area_tag "property_notes" %>
+
+      Do you have any positive or negative feedback about specific volunteers?
+      <%= text_area_tag "volunteer_notes" %>
+      <br />
+      <br />
+
+      Were there any issues with the equipment set?
+       <%= text_area_tag "equipment_set_notes" %>
 
     </fieldset>
 

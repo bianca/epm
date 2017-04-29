@@ -3,6 +3,17 @@
 <%= link_to 'New Equipment Set', new_equipment_set_path, {class: 'button blue'} %>
 </div>
 
+<% if @equipment_set_issues.present? %>
+<h1>Equipment Set Issues</h1>
+<% @equipment_set_issues.each do |equipment_set| %>
+  <div class="block" style="margin-left: 20%; margin-right: 20%;padding-bottom: 30px">
+    <h1><%= equipment_set.title %></h1> 
+    <%= link_to 'Mark Resolved', resolve_issue_equipment_set_path(equipment_set), data: { confirm: 'Are you sure?' } %>
+  </div>
+<% end %>
+<h1>Equipment Sets</h1>
+<% end %>
+
 <% @equipment_sets.each do |equipment_set| %>
   <div class="block" style="margin-left: 20%; margin-right: 20%;padding-bottom: 30px">
     <h1><%= equipment_set.title %></h1>

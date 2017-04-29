@@ -3,6 +3,11 @@
 <p>
   <strong>Description:</strong>
   <%= @equipment_set.description %>
+
+  <% if @equipment_set.issues.present? %>
+    <br /> <br /> <strong>Issues:</strong>
+  	<span style="color: #991212"> <%= @equipment_set.issues %></span>
+  <% end %>
     <%= render 'shared/address_and_map', thing: @equipment_set %>
 </p>
 </div>

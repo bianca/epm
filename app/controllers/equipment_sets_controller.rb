@@ -3,6 +3,7 @@ class EquipmentSetsController < ApplicationController
   load_and_authorize_resource :equipment_set
 
   def index
+    @equipment_set_issues = EquipmentSet.where.not(issues: nil )
   end
 
   def show
@@ -15,6 +16,13 @@ class EquipmentSetsController < ApplicationController
 
   def edit
   end
+
+  def resolve_issue
+    @equipment_set.issues = ""
+    @equipment_set.save
+    redirect_to action: "index"
+  end
+
 
   def create
     @equipment_set = EquipmentSet.new(equipment_set_params)

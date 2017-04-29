@@ -6,6 +6,7 @@ Epm::Application.routes.draw do
 
   resources :equipment_sets do
     get 'order', on: :collection
+    get 'resolve_issue', on: :member
   end
 
   root 'events#dashboard'

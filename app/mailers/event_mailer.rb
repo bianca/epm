@@ -32,6 +32,18 @@ class EventMailer < ActionMailer::Base
     mail to: to(@event.coordinator), subject: "You have been assigned to lead #{@event.display_name(@event.coordinator)}"
   end
 
+  def volunteer_notes(event, notes, admins)
+    @event = event
+    @notes = notes
+    mail to: to(admins), subject: "Volunteer notes in post-pick details for #{@event.display_name(@event.coordinator)} "
+  end
+
+  def equipment_set_notes(event, notes, admins)
+    @event = event
+    @notes = notes
+    mail to: to(admins), subject: "Equipment set issue in post-pick details for #{@event.display_name(@event.coordinator)} "
+  end
+
   def cancel(event, users)
     @event = event
     @user = users.first
