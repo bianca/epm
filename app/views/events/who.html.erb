@@ -78,7 +78,7 @@
           if @tree_type_counts.has_key?(event_tree.tree.species) == false
             @tree_type_counts[event_tree.tree.species] = 1
           else 
-            @tree_type_counts[event_tree.tree.species] =+ 1
+            @tree_type_counts[event_tree.tree.species] += 1
           end
         end
       %>
@@ -115,7 +115,7 @@
         @tree_type_counts.each do |tree_type,tree_count| 
           %> 
 
-            # of <%=tree_type %> trees picked <%= text_field_tag "trees_picked[#{tree_type}]", '', size: 3, class: "update_pounds" %>, # of pounds of <%=tree_type %> fruit picked <%= text_field_tag "pounds_picked[#{tree_type}]", '', size: 3, class: "update_pounds" %><br />
+            # of <%=tree_type %> trees picked <%= text_field_tag "trees_picked[#{tree_type}]", tree_count, size: 3, class: "update_pounds" %>, # of pounds of <%=tree_type %> fruit picked <%= text_field_tag "pounds_picked[#{tree_type}]", '', size: 3, class: "update_pounds" %><br />
           
           <%
         end
