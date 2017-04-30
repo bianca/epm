@@ -71,6 +71,56 @@
     </fieldset>
 
 <%= next_col %>
+
+      <% 
+        @tree_type_counts = {}
+        @event.event_trees.each do |event_tree| 
+          if @tree_type_counts.has_key?(event_tree.tree.species) == false
+            @tree_type_counts[event_tree.tree.species] = 1
+          else 
+            @tree_type_counts[event_tree.tree.species] =+ 1
+          end
+        end
+      %>
+
+      <script language="javascript">
+          $(document).ready(function () { 
+            $('.update_pounds').change(function (evt) {
+              console.log("update_pounds")
+                // whatever that berry is, redistribute that 
+                var id = $(this).attr("id")
+                treetype = id.replace("trees_picked_","").replace("pounds_picked_","")
+                var limit = $("#trees_picked_"+treetype).val()
+                var pounds = $("#pounds_picked_"+treetype).val() 
+                console.log(treetype,limit,pounds)
+                if (!!limit && !!pounds) {
+                  var distributed_pounds = parseInt(pounds)/limit
+                  var count = 0;
+                  $('.'+treetype).each(function (evt) {
+                      if (count < limit) {
+                        $(this).val(distributed_pounds)
+                        count++
+                      } else {
+                        $(this).val(0)
+                      }
+                  })
+                }
+            })
+          })
+      </script>
+      <div style="font-size: 16px; border: 2px solid #999; padding: 10px; margin: 10px">
+      <% 
+        trees_picked = {}
+        pounds_picked = {}
+        @tree_type_counts.each do |tree_type,tree_count| 
+          %> 
+
+            # of <%=tree_type %> trees picked <%= text_field_tag "trees_picked[#{tree_type}]", '', size: 3, class: "update_pounds" %>, # of pounds of <%=tree_type %> fruit picked <%= text_field_tag "pounds_picked[#{tree_type}]", '', size: 3, class: "update_pounds" %><br />
+          
+          <%
+        end
+      %>
+      </div>
     <fieldset class="trees">
       <% @event.event_trees.each do |event_tree| %>
         <fieldset id="<%=event_tree.tree.id %>" style="border: 2px solid #999; padding: 10px; margin: 10px">
@@ -78,7 +128,7 @@
         <%= f.fields_for "event_tree[]", event_tree do |et| %>
           <%#= et.hidden #{event_tree.tree.id} %> 
           <%= et.label :lbs_picked, "Pounds picked" %>
-          <%= et.text_field :lbs_picked %>
+          <%= et.text_field :lbs_picked, class: event_tree.tree.species %>
           <br />
           <%= et.label :quality, "Quality" %>
           <%= et.hidden_field :quality %>
