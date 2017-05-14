@@ -106,16 +106,32 @@
                   })
                 }
             })
+
+            $('select.update_quality').change(function (evt) {
+                // whatever that type is, assign that elsewhere
+                var v = $(this).val()
+                var id = $(this).attr("id")
+                console.log(v, id)
+                treetype = id.replace("quality_","")
+                  $('.'+treetype+"_quality").each(function (evt) {
+                    $(this).val(v)
+                  })
+            })
           })
       </script>
       <div style="font-size: 16px; border: 2px solid #999; padding: 10px; margin: 10px">
+      <p>
+      Use this box to fill out information for each tree type. It will fill out the information for each individual tree below.
+      </p>
       <% 
         trees_picked = {}
         pounds_picked = {}
         @tree_type_counts.each do |tree_type,tree_count| 
           %> 
 
-            # of <%=tree_type %> trees picked <%= text_field_tag "trees_picked[#{tree_type}]", tree_count, size: 3, class: "update_pounds" %>, # of pounds of <%=tree_type %> fruit picked <%= text_field_tag "pounds_picked[#{tree_type}]", '', size: 3, class: "update_pounds" %><br />
+            # of <%=tree_type %> trees picked <%= text_field_tag "trees_picked[#{tree_type}]", tree_count, size: 3, class: "update_pounds" %>, # of pounds of <%=tree_type %> fruit picked <%= text_field_tag "pounds_picked[#{tree_type}]", '', size: 3, class: "update_pounds" %>
+            <br /> <%=tree_type %> quality: <%= select_tag("quality[#{tree_type}]",options_for_select(Tree.quality_labels), include_blank: true, class: "update_quality") %>
+            <br /> <br />
           
           <%
         end
@@ -132,7 +148,7 @@
           <br />
           <%= et.label :quality, "Quality" %>
           <%= et.hidden_field :quality %>
-          <%= et.select(:quality,  options_for_select(Tree.quality_labels), include_blank: true) %>
+          <%= et.select(:quality,  options_for_select(Tree.quality_labels), {include_blank: true}, {class: "#{event_tree.tree.species}_quality"})  %>
           <br />
           <%= et.label :quality_issues, "Quality Issues (if any)" %><br />
           <%= et.text_area :quality_issues %>
