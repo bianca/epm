@@ -85,6 +85,11 @@
 
       <script language="javascript">
           $(document).ready(function () { 
+            $(document).keypress(function(e) {
+                if(e.which == 13) {
+                    e.preventDefault();
+                }
+            });
             $('.update_pounds').change(function (evt) {
               console.log("update_pounds")
                 // whatever that berry is, redistribute that 
