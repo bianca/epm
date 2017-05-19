@@ -461,6 +461,8 @@
             })
             .success(function (response) {
               $("#event_equipment_set_id").empty();
+              var option = $('<option></option>');
+              $("#event_equipment_set_id").append(option);
               for (var a in response) {
                 var count = 3
                 var option = $('<option></option>').attr("value", response[a].id).text(response[a].title + " ("+(Math.round(response[a].distance))+" km)");
