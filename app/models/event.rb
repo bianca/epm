@@ -65,13 +65,14 @@ class Event < ActiveRecord::Base
   def can_edit_attribute?(attribute, user)
     return false unless user.ability.can?(:edit, self)
     return true if user.has_role?(:admin)
-    return false if user.has_role?(:coordinator) && attribute=:trees
+    return false if user.has_role?(:coordinator) && attribute==:trees
     return true if user.has_role?(:coordinator) && ((coordinator.present? && coordinator == user) || coordinator.blank?)
     return false unless [:start, :finish].include?(attribute)
     #proposed? || start.blank?
   end
 
   def can_edit_something?(user)
+    return true if user.has_role?(:admin)
     [:name, :start, :finish, :notes, :description, :address, :lat, :lng, :ward, :hide_specific_location, :min, :max, :coordinator].each do |attr|
       return true if can_edit_attribute? attr, user
     end
