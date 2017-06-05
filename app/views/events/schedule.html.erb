@@ -41,9 +41,21 @@ td {
 .av.clicked:before {
 	content: "Unavailable";
 }
+.start {
+	font-weight: bold;
+}
+
+p {
+	max-width : 100%;
+	color: #444;
+}
 </style>
+<p class="start">
+Welcome to NFFTT’s fruit picking portal. This is where you can register trees, edit your tree information, and schedule a pick request. 
+</p>
 <p>
-Hey there! You'll see below a table of the next two weeks divided into morning/afternoon/evening. Please leave available times green and click on unavailable times to turn them red. Thanks!
+Please select dates and times you would prefer a group of volunteers to come pick your tree. Ideally the dates you select is when the tree will be at peak ripeness. Please refer to our Fruit Ripening Guide for help identifying peak ripeness.
+ 
 </p>
 <%= form_for Event.new do |f| %>
 <table>
@@ -75,6 +87,18 @@ Hey there! You'll see below a table of the next two weeks divided into morning/a
 	end
 %>
 </table>
+<p>
+If your tree is no longer pickable (dead, diseased, cut down, etc.), please indicate this under your tree profile. 
+</p>
+<p>
+We will do our best to match a group of volunteers to your tree. You don’t need to be home for us to pick, unless it’s necessary for us to gain access to the tree - or you want to see us in action! We ask you to lend us a ladder or borrow one from a neighbour to help us reach the higher branches.The volunteers will collect as much as they can safely pick in up to two hours and the harvest will be shared: 1/3 to you, 1/3 to the volunteers, and 1/3 to a food bank, shelter or community kitchen.
+</p>
+<p>
+We will send you a confirmation email once the pick has been scheduled. 
+</p>
+<p>
+Thank you for participating in NFFTT’s fruit picking program, and sharing fruit with your community.
+</p> 
 <!-- f.hidden_field :tree_ids, value: params['tree_id'] %-->
 <%= hidden_field_tag  "event[tree_ids][]",params['tree_id'] %> 
 <%= f.hidden_field :owner_availability %>

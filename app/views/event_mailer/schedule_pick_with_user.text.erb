@@ -1,9 +1,9 @@
 Hi <%= @tree.owner.fname %>, 
-<br /><br /> 
+ 
 We'd like to schedule <%= Configurable.event.indefinitize %> in the next couple of weeks at your property for the <%=@tree.species %> tree you registered with us.
-<br /><br />
-<a href="<%=root_url %>events/schedule?tree_id=<%=@tree.id %>">Sure, let's schedule it!</a>
- <br /><br />
+
+<%=root_url %>events/schedule?tree_id=<%=@tree.id %>
+ 
 Thank you so much for offering to share the bounty of your tree this summer!
 
 
