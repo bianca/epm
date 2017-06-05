@@ -2,7 +2,7 @@ task :importTrees => :environment do
 
 	tree_errors = []
 	user_errors = []
-	rows = CSV.read(Rails.root + "app/assets/data/formdata.csv")
+	rows = CSV.read(Rails.root + "app/assets/data/formdata_update.csv")
 	#header = rows.first.map{|c| c.downcase }
     rows = rows[1..-1]
     rows.each do |row|
@@ -192,6 +192,7 @@ task :importTrees => :environment do
 		    				t.height = 1 
 		    			end
 		    		end	
+		    		t.created_at = Time.zone.now
 		  			t.pickable = true
 		     		t.pickable = false if row[36+gap].present? || row[1].present?
 		     		t.not_pickable_reason = row[36+gap].to_s if row[36+gap].present?	
