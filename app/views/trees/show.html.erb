@@ -95,22 +95,16 @@
 			<% if contact.can_email == true %> 
 				<li>Email</li>
 			<% end %>
-		<% else %>
-			<li>Email</li>
 		<% end %>
 		<% if contact.can_phone.present? %>
-			<% if contact.can_phone == true %> 
+			<% if (contact.can_phone == "true") %> 
 				<li>Phone</li>
 			<% end %>
-		<% else %>
-			<li>Phone</li>
 		<% end %>
 		<% if contact.can_mail.present? %>
-			<% if contact.can_mail == true %> 
+			<% if (contact.can_mail == true) %> 
 				<li>Mail</li>
 			<% end %>
-		<% else %>
-			<li>Mail</li>
 		<% end %>
 		<% if contact.do_not_contact_reason.present? %>
 			<p style="color: #ff0000"> Do not contact this person!</p>
