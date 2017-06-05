@@ -43,6 +43,7 @@ class Ability
         can :manage, Tree do |tree|
           tree.submitter == user || tree.owner == user
         end
+        cannot :index, Tree
       end
 
       if user.has_role? :participant

@@ -46,6 +46,7 @@ Epm::Application.routes.draw do
   # for configurable_engine gem; it generates its own routes as well which are unused
   put 'settings', to: 'settings#update', as: 'settings'
   get 'settings', to: 'settings#show'
+  get 'tree_registrant_welcome', to: 'settings#tree_registrant_welcome'
 
   resources :trees do
     get 'copy', on: :member

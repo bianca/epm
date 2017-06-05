@@ -14,4 +14,13 @@ class SettingsController < ApplicationController
     redirect_to settings_path, :notice => 'Changes successfully updated.'
   end
 
+  def tree_registrant_welcome
+    tr = User.tree_registrants
+     tr.each do |user|
+      puts user.to_yaml
+      EventMailer.tree_registrants_welcome(user).deliver    
+    end
+    flash[:notice] = "Tree registrant emails sent."
+    redirect_to settings_path
+  end
 end

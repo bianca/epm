@@ -93,6 +93,11 @@ class EventMailer < ActionMailer::Base
     mail to: to(tree.owner), subject: "Can we schedule a pick for your #{tree.species} tree?"
   end
 
+  def tree_registrants_welcome(user)
+    @user = user
+    mail bcc: user.email, subject: "Thanks again for adding your trees to the mix!"
+  end
+
   private
 
     def to(users)
