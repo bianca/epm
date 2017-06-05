@@ -16,11 +16,12 @@ class ApplicationController < ActionController::Base
 
    if current_user
        if current_user.has_role?(:tree_registrant) || current_user.has_role?(:tree_owner)
-        redirect_to mine_trees_url
+         redirect_to request.referrer || mine_trees_url
         else
           redirect_to root_url, alert: "Sorry, you don't have permission to do that."
         end
    else
+     store_current_location
      redirect_to new_user_session_url
    end
   end
@@ -30,6 +31,10 @@ class ApplicationController < ActionController::Base
 
     def record_not_found
       render 'shared/404', status: 404
+    end
+
+    def store_current_location
+      store_location_for(:user, request.url)
     end
 
 end
