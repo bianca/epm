@@ -17,7 +17,7 @@
           <%= link_to tree.species, tree %>
         </div>
         <div style="width: 30%; clear: none; float: left">
-            <% if tree.owner.present? %>
+            <% if tree.owner_id.present? %>
               <%= link_to (tree.owner.address.split(/[\n,]+/)[0]).to_s + "...", tree %>
             <% else %>
               ...

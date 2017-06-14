@@ -29,8 +29,13 @@
           </a>
         </td>
         <td>
+        <% if tree.owner_id.present? %>
         <a href="<%=tree_path(tree) %>"><%= (tree.owner.address.split(/[\n,]+/)[0]).to_s + "..." %>
-        </a></td>
+        </a>
+        <% else %>
+          ...
+        <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

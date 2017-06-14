@@ -72,9 +72,11 @@
 		<p>
 			<b>Name: </b> <%= contact.fname %> <%= contact.lname %> is the primary contact for this tree.
 		</p>
+		<% if @tree.relationship.present? %>
 		<p>
 			<b>Contact Type: </b> They are the <%=Tree.relationship_labels[@tree.relationship.to_sym] %>
 		</p>
+		<% end %>
 		<p>
 			<b>Email: </b> <%= contact.email || "None" %> 
 		</p>
@@ -128,7 +130,7 @@
 
 <h1>
 	Property Details   
-
+	<p style="font-style: italic; font-size:12px">These details describe the property (not the tree). To edit these, visit the property owner user profile.</p>
 	<div style="float: right">
 	<% if can? :create, Event %>
     	<%= link_to "Add New #{Configurable.event.titlecase.singularize} for this Tree", new_event_path({"tree_id" => @tree.id}), {class: "button"} %>
