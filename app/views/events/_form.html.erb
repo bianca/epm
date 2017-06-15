@@ -81,10 +81,10 @@
 
             <%            
               start = @event.owner_availability_start             
-                (1..14).each do |j| 
+                (0..13).each do |j| 
 
                 %>
-                    grid['<%=(start + (j).day).strftime("%F") %>'] = [<%=@event.owner_availability[((1-1)*14+j)] %>,<%=@event.owner_availability[((2-1)*14+j)] %>,<%=@event.owner_availability[((3-1)*14+j)-1] %>]
+                    grid['<%=(start + (j+1).day).strftime("%F") %>'] = [<%=@event.owner_availability[j] %>,<%=@event.owner_availability[14+j] %>,<%=@event.owner_availability[28+j] %>]
             <% end %>
 
             var day = $("#event_start_day").val();
@@ -93,13 +93,18 @@
             var d = new Date(day + " " + time + " " + p)
             d = d.getHours()
             if (day != "" && time != "") {
-              if ((parseInt(grid[day][0]) == 1 && d >= 9 && d < 13 )
-                  || (parseInt(grid[day][1]) == 1 && d >= 13 && d < 17 )
-                  || (parseInt(grid[day][2]) == 1 && d >= 17 && d < 21 )
-                ) {
-                $("#when").removeClass("badtime")
-              } else {
+              if (!(day in grid)) {
                 $("#when").addClass("badtime")
+              }
+              else {
+                if ((parseInt(grid[day][0]) == 1 && d >= 9 && d < 13 )
+                    || (parseInt(grid[day][1]) == 1 && d >= 13 && d < 17 )
+                    || (parseInt(grid[day][2]) == 1 && d >= 17 && d < 21 )
+                  ) {
+                  $("#when").removeClass("badtime")
+                } else {
+                  $("#when").addClass("badtime")
+                }
               }
             }
           })
