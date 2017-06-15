@@ -1,6 +1,6 @@
 <%
   tit = @event.display_name(current_user)
-  tit = "#{@event.status.capitalize}: #{tit}" unless @event.approved?
+  tit = "#{@event.status.capitalize}: #{tit}" unless @event.approved? || @event.toschedule?
   title tit
 %>
 
