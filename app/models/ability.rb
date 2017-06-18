@@ -56,6 +56,7 @@ class Ability
         end
         #cannot :index, Tree
         can :create, Tree
+        cannot :index, Tree
       end
       if user.has_role?(:tree_registrant) || user.has_role?(:tree_owner)
         cannot :manage, [Event, Role, EquipmentSet, Agency, Tree, :setting]
