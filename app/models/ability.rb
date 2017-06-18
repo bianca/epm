@@ -29,7 +29,7 @@ class Ability
 
       if user.has_role? :coordinator
         can [:read, :create], Event
-        can :read, [EquipmentSet, Agency]
+        can [:read, :order], [EquipmentSet, Agency]
         can :edit, Event do |event|
           ((event.coordinator.present? && event.coordinator == user) || event.coordinator.blank?)
         end
@@ -39,7 +39,6 @@ class Ability
         #   however that authorization is handled *not* through cancan
         #   but rather through an event's can_edit_attribute? method
         can [:show, :read_attendance], User
-
         can :manage, Tree do |tree|
           tree.submitter == user || tree.owner == user
         end
