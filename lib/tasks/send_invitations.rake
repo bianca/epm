@@ -7,12 +7,8 @@ task :send_invitations => :environment do
       if e.full? && !e.can_have_participants?
         Invitation.where(event_id: e.id).destroy_all
       elsif e.approved?
-        eus = e.event_users.where user_id: invitation.user_id
-        if eus.any?
-          eu = eus.first
-          EventMailer.invite(invitation.event, invitation.user).deliver if eu.invited?
-        end
-      end
+          EventMailer.invite(invitation.event, invitation.user).deliver
+      end 
     end
     invitation.destroy
   end
