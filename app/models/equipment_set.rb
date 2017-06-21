@@ -14,4 +14,17 @@ class EquipmentSet < ActiveRecord::Base
 	EquipmentSet.by_distance(:origin => origin)
   end
 
+  def available?(start_time, end_time)
+    self.events.each do |event|
+      if event.start.present? && event.finish.present?
+          es = event.start.to_datetime.in_time_zone - 1.hour
+          ef = event.finish.to_datetime.in_time_zone + 1.hour
+          if (start_time <= es && end_time >= es) || (start_time <= ef && end_time >= ef)  || (start_time >= es && start_time <= ef)|| (end_time >= es && end_time <= ef)
+            return false
+          end
+      end
+    end
+    return true
+  end
+
 end
