@@ -424,7 +424,6 @@
       end
     %>
     <% if EquipmentSet.any? %>
-      <%=@event.equipment_set_id.to_i %>
       <fieldset id="equipment_set"> 
         <%= f.label :equipment_set_id, style: 'font-weight:normal' %>
         <%= f.collection_select :equipment_set_id, EquipmentSet.all, :id, :title, {include_blank: true, :selected => @event.equipment_set_id.to_i} %>
