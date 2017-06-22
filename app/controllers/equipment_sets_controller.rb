@@ -41,7 +41,11 @@ class EquipmentSetsController < ApplicationController
         end_t = start_t + ((params['duration'].to_i/3600)).hours + 1.hour 
         start_time = start_t
         end_time = end_t
-        @equipment_sets = @equipment_sets.select{|eq| eq.available? start_t, end_t}
+        event_id = ""
+        if params['event_id'].present?
+          event_id = params['event_id']
+        end
+        @equipment_sets = @equipment_sets.select{|eq| eq.available? start_t, end_t, event_id}
       end
       render json: @equipment_sets 
   end
