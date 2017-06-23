@@ -417,8 +417,8 @@
 
   def take_attendance
     params['attendance'] ||= []
-    #attended_eu_ids = params['attendance'].map{|eu_id, v| eu_id.to_i}
-    #@event.take_attendance attended_eu_ids
+    attended_eu_ids = params['attendance'].map{|eu_id, v| eu_id.to_i}
+    @event.take_attendance attended_eu_ids
     if params["volunteer_notes"].present?
       admins = User.admins.reject{|u| u == current_user}
       EventMailer.volunteer_notes(@event, params["volunteer_notes"], admins).deliver
