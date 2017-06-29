@@ -114,7 +114,11 @@
         <%= link_to et.tree.species, tree_path(et.tree) %>
       </td>
       <td>
+      <% if (@event.address && @event.respond_to?(:hide_specific_location) && !@event.hide_specific_location) || (@event.address && !@event.respond_to?(:hide_specific_location))|| (@event.address && @event.respond_to?(:hide_specific_location) && (current_user.events.include?(@event) || current_user.has_role?(:admin))) %>
+
         <%= link_to et.tree.owner.address, tree_path(et.tree) %>
+      <% end %>
+
       </td>
     </tr>
   <% end %>
