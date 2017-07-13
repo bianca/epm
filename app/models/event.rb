@@ -427,14 +427,14 @@ class Event < ActiveRecord::Base
   end
 
   def should_invite?
-    can_accept_participants? && ward && !full? && event_users.where(status: EventUser.statuses_array(:invited, :not_attending)).none? && User.invitable_to(self).any?
+    can_accept_participants? && ward && !full? && Invitation.where(event_id: id).none? && event_users.where(status: EventUser.statuses_array(:invited, :not_attending)).none? && User.invitable_to(self).any?
   end
 
   def invite
     return 0 unless ward
     n = 0
     priority_gap = 2
-    User.invitable_to(self).shuffle.each do |participant|
+    User.invitable_to(self).uniq.shuffle.each do |participant|
       
         if self.start > 36.hours.from_now 
           send_by = Time.zone.now + (priority_gap * participant.priority).hours
