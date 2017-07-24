@@ -164,7 +164,11 @@
   end
 
   def calendar
-    @events = Event.not_cancelled.in_month params['year'], params['month']
+      if current_user.has_role? :participant
+        @events = current_user.participating_events + current_user.potential_events
+      else 
+        @events = Event.not_cancelled.in_month params['year'], params['month']        
+      end
   end
 
   def show
