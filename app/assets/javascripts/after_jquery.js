@@ -6,8 +6,15 @@ function make_map(map_div, hide_self) {
   if (me == undefined) {
     me = L.latLng($('body').data('lat'), $('body').data('lng'));
   }
-  var map = new L.Map(map_div, { center: me, zoom: 10, minZoom: 3, maxZoom: 18,
-      layers: MQ.mapLayer()
+  var mqlayer = MQ.mapLayer();
+  mqlayer.on('tileerror', function(error, tile) {
+      L.tileLayer('https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibmZmdHQiLCJhIjoiY2o1aGNpMDZlMWpoNTMybzJqZjU5aHloYiJ9.Qow52H-hhEq6XgCl9mojrQ', {
+        attribution: 'Mapbox'
+      }).addTo(map);
+  });
+
+  var map = new L.Map(map_div, { center: me, zoom: 10, minZoom: 3, maxZoom: 18 ,
+      layers: mqlayer
     });
   if (!hide_self) {
     L.marker(me, {icon: L.divIcon({className: 'me', html: '<div class="inner"></div>', iconSize: L.point(15, 15)})}).addTo(map);
