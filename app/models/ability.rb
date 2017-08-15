@@ -39,9 +39,10 @@ class Ability
         #   however that authorization is handled *not* through cancan
         #   but rather through an event's can_edit_attribute? method
         can [:show, :read_attendance], User
-        can :manage, Tree do |tree|
-          tree.submitter == user || tree.owner == user
-        end
+        #can :manage, Tree do |tree|
+        #  tree.submitter == user || tree.owner == user
+        #end
+        can [:read], Tree
         cannot :index, Tree
       end
 
@@ -51,8 +52,10 @@ class Ability
           !event.hide_specific_location || event.participants.include?(user)
         end
 
-        can :manage, Tree do |tree|
-          tree.submitter == user || tree.owner == user
+        unless  user.has_role? :coordinator
+          can :manage, Tree do |tree|
+            tree.submitter == user || tree.owner == user
+          end
         end
         #cannot :index, Tree
         can :create, Tree
