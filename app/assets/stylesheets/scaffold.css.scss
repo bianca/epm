@@ -1,6 +1,5 @@
 html {
-  background-color: grey;
-  background-image: url(http://notfarfromthetree.org/nfftt_2014/wp-content/themes/nfftt/library/images/main_bg.jpg);
+  background-color: white;
 }
 body {
   margin: 0;
@@ -52,7 +51,7 @@ $header_padding: 0.3em;
 header {
   border: solid black;
   border-width: 1px 0;
-  background-color: #685c53;
+  background-color: #d6e03d;
   color: white;
   position: relative;
   padding: 0 $header_padding; /* the top and bottom padding is added *within* the links */
