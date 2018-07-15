@@ -231,7 +231,7 @@
         <div>
           <%= uf.label :home_ward, "City Ward", style: 'font-weight:normal' %>
           <%= uf.collection_select :home_ward, Ward.all, :id, :name, include_blank: true %>
-          <span class="hint"><%= link_to 'ward map', 'http://app.toronto.ca/wards/jsp/wards.jsp' %></span>
+          <span class="hint"><%= link_to 'ward map', 'https://www.toronto.ca/resources/ward_listing/img/wards_keymap.gif' %></span>
         </div>
 
         <%= render layout: 'shared/address_form', locals: { f: uf } do %>

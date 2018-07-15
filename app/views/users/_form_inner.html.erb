@@ -113,7 +113,7 @@
   <div>
     <%= f.label :home_ward, style: 'font-weight:normal' %>
     <%= f.collection_select :home_ward, Ward.all, :id, :name, include_blank: true %>
-    <span class="hint"><%= link_to 'ward map', 'http://app.toronto.ca/wards/jsp/wards.jsp' %></span>
+    <span class="hint"><%= link_to 'ward map', 'https://www.toronto.ca/resources/ward_listing/img/wards_keymap.gif' %></span>
     <div id="inactive_ward_message" class="note">
         Aw! We don't serve your ward yet, but please go ahead and sign up! We're expanding every season, and we'll be sure to email you when we land in your ward!
     </div>
@@ -185,7 +185,7 @@
 
     <%= next_col %> 
 
-    <a href="http://app.toronto.ca/wards/jsp/wards.jsp" style="display:block;text-align:right">
+    <a href="https://www.toronto.ca/resources/ward_listing/img/wards_keymap.gif" style="display:block;text-align:right">
       <img src="http://www.toronto.ca/wards2000/images/wards_keymap.gif" width="602" height="334" alt="map of Toronto wards">
       <br>
       Check which ward you live in
