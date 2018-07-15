@@ -71,7 +71,7 @@ class EventUser < ActiveRecord::Base
   end
 
   def notify_coordinator event
-    if event.time_until < 24.hours
+    if event.time_until < 24.hours && !event.past?
       EventMailer.attendance_changes(event, [event.coordinator]).deliver 
     end
   end
