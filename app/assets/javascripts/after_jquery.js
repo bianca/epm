@@ -37,27 +37,30 @@ function marker_dragged(e) {
 $(function(){
 
   // add maps
-  $('*[data-map]').each(function(){
-    var container = $(this);
-    var map_div = '<div class="map" id="map_' + container.attr('id') + '"></div>';
-    if (container.data('map') == 'side') {
-      container.find('ol, ul').wrap('<div class="colA"></div>').parent().wrap('<div class="cols"></div>').parent().after('<div class="clearfix"></div>').append(map_div);
-    }
-    else {
-        container.append(map_div);
-    }
-    var map = make_map('map_' + container.attr('id'));
-    var points = [];
-    var singleton = container.data('lat'); // use as boolean
-    $(singleton ? container : container.find('*[data-lat]')).each(function(){
-      var point = L.latLng($(this).data('lat'), $(this).data('lng'));
-      points.push(point);
-      var marker = L.marker(point).addTo(map);
-      if (!singleton) {
-        marker.bindPopup($(this).children().length ? $(this).html() : $('<div>').append($(this).clone()).html());
+  $('.open-map').click(function () {
+    $('.open-map').hide();
+    $('*[data-map]').each(function(){
+      var container = $(this);
+      var map_div = '<div class="map" id="map_' + container.attr('id') + '"></div>';
+      if (container.data('map') == 'side') {
+        container.find('ol, ul').wrap('<div class="colA"></div>').parent().wrap('<div class="cols"></div>').parent().after('<div class="clearfix"></div>').append(map_div);
       }
+      else {
+          container.append(map_div);
+      }
+      var map = make_map('map_' + container.attr('id'));
+      var points = [];
+      var singleton = container.data('lat'); // use as boolean
+      $(singleton ? container : container.find('*[data-lat]')).each(function(){
+        var point = L.latLng($(this).data('lat'), $(this).data('lng'));
+        points.push(point);
+        var marker = L.marker(point).addTo(map);
+        if (!singleton) {
+          marker.bindPopup($(this).children().length ? $(this).html() : $('<div>').append($(this).clone()).html());
+        }
+      });
+      finish_map(map, points);
     });
-    finish_map(map, points);
   });
 
   // form stuff

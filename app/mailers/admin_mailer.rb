@@ -8,4 +8,5 @@ class AdminMailer < ActionMailer::Base
     mail subject: "Error on #{Configurable.title}", to: Configurable.webmaster
   end
 
+
 end

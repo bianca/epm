@@ -18,7 +18,9 @@
         </div>
         <div style="width: 30%; clear: none; float: left">
             <% if tree.owner_id.present? %>
+              <% if tree.owner.address.present? %>
               <%= link_to (tree.owner.address.split(/[\n,]+/)[0]).to_s + "...", tree %>
+              <% end %>
             <% else %>
               ...
             <% end %>
